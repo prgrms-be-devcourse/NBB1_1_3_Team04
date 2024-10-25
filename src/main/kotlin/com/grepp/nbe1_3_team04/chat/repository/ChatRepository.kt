@@ -11,5 +11,5 @@ interface ChatRepository : JpaRepository<Chat, Long>, CustomChatRepository {
     fun findByChatRoom_ChatroomId(chatroomId: Long): List<Chat>
 
     @Query("select c from Chat c where c.isDeleted = 'false' and c.chatId = ?1")
-    fun findByChatId(chatId: Long?): Chat?
+    fun findByChatId(chatId: Long): Chat?
 }
