@@ -21,8 +21,8 @@ data class VoteCourtCreateRequest(
         return VoteCourtCreateServiceRequest(
             title!!,
             endAt!!,
-            choices!!.stream()
-                .map<Long>(CourtChoices::courtId)
+            choices!!
+                .map { it.courtId }
                 .toList()
         )
     }
