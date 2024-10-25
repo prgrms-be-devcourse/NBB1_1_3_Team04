@@ -43,7 +43,13 @@ enum class ExceptionMessage(text: String) {
 
     //Game
     GAME_NOT_FOUND("해당 게임을 찾을 수 없습니다."),
-    GAME_STATUS_NOT_VALID("게임 상태는 READY 또는 IGNORE만 가능합니다.");
+    GAME_STATUS_NOT_VALID("게임 상태는 READY 또는 IGNORE만 가능합니다."),
+
+    //global
+    REQUIRE_NOT_NULL_ID("ID는 Null일 수 없습니다."),
+    REQUIRE_NOT_NULL_CREATED_AT("생성일은 Null일 수 없습니다."),
+    REQUIRE_NOT_NULL_UPDATED_AT("수정일은 Null일 수 없습니다.");
+
 
     val text: String = text
 }
