@@ -22,7 +22,7 @@ class Chat private constructor(
 
     @ManyToOne
     @JoinColumn(name = "chatroom_id", nullable = false)
-    var chatRoom: Chatroom = chatroom
+    var chatroom: Chatroom = chatroom
         protected set
 
     @ManyToOne
