@@ -7,14 +7,14 @@ import org.hibernate.annotations.SQLDelete
 
 @SQLDelete(sql = "UPDATE team_rate SET is_deleted = TRUE WHERE team_rate_id = ?")
 @Entity
-class TeamRate(
+class TeamRate private constructor(
     team: Team,
     rating: Double,
     evaluation: String?
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val teamRateId: Long? = null
+    val teamRateId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
@@ -35,9 +35,9 @@ class TeamRate(
             evaluation: String?
         ): TeamRate {
             return TeamRate(
-                team,
-                rating,
-                evaluation
+                team = team,
+                rating = rating,
+                evaluation = evaluation
             )
         }
     }

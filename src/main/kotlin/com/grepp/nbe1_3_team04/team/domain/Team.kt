@@ -7,7 +7,7 @@ import org.hibernate.annotations.SQLDelete
 
 @SQLDelete(sql = "UPDATE team SET is_deleted = 'TRUE' WHERE team_id = ?")
 @Entity
-class Team (
+class Team private constructor(
     stadiumId: Long?,
     name: String,
     description: String?,
@@ -16,7 +16,7 @@ class Team (
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val teamId: Long? = null
+    val teamId: Long? = null
 
     @Column(nullable = true)
     var stadiumId: Long? = stadiumId
@@ -59,11 +59,11 @@ class Team (
             location: String?
         ): Team {
             return Team(
-                stadiumId,
-                name,
-                description,
-                totalRecord,
-                location
+                stadiumId = stadiumId,
+                name = name,
+                description = description,
+                totalRecord = totalRecord,
+                location = location
             )
 
         }

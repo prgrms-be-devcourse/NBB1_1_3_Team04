@@ -9,14 +9,14 @@ import org.hibernate.annotations.SQLDelete
 
 @SQLDelete(sql = "UPDATE team_member SET is_deleted = 'TRUE' WHERE team_member_id = ?")
 @Entity
-class TeamMember(
+class TeamMember private constructor(
     team: Team,
     member: Member,
     role: TeamMemberRole
 ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val teamMemberId: Long? = null
+    val teamMemberId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
@@ -37,9 +37,9 @@ class TeamMember(
             role: TeamMemberRole
         ): TeamMember {
             return TeamMember(
-                team,
-                member,
-                role
+                team = team,
+                member = member,
+                role = role
             )
         }
 
@@ -48,8 +48,8 @@ class TeamMember(
             member: Member
         ): TeamMember {
             return TeamMember(
-                team,
-                member,
+                team = team,
+                member = member,
                 role = TeamMemberRole.CREATOR
             )
         }
@@ -59,8 +59,8 @@ class TeamMember(
             member: Member
         ): TeamMember {
             return TeamMember(
-                team,
-                member,
+                team = team,
+                member = member,
                 role = TeamMemberRole.MEMBER
             )
         }
