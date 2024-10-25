@@ -3,7 +3,6 @@ package com.grepp.nbe1_3_team04.vote.service.response
 import com.grepp.nbe1_3_team04.vote.domain.Vote
 import java.time.LocalDateTime
 
-@JvmRecord
 data class AllVoteResponse(
     val voteId: Long,
     val title: String,
