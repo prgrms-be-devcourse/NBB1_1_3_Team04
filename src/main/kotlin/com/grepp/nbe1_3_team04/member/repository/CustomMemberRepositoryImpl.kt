@@ -7,7 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 class CustomMemberRepositoryImpl(private val queryFactory: JPAQueryFactory) : CustomMemberRepository {
 
 
-    override fun findMemberIdByMemberEmail(email: String?): Long? {
+    override fun findMemberIdByMemberEmail(email: String): Long? {
         return queryFactory.select(member.memberId)
             .from(member)
             .where(member.email.eq(email)
@@ -15,7 +15,7 @@ class CustomMemberRepositoryImpl(private val queryFactory: JPAQueryFactory) : Cu
             .fetchOne()
     }
 
-    override fun existByEmail(email: String?): Boolean {
+    override fun existByEmail(email: String): Boolean {
         val count = queryFactory
             .selectOne()
             .from(member)

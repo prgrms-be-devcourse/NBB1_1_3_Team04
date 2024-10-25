@@ -11,11 +11,11 @@ import java.util.*
 @Repository
 interface MemberRepository : JpaRepository<Member, Long>, CustomMemberRepository { //CustomGlobalRepository {
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
-    fun findByMemberId(@Param("id") memberId: Long?): Member?
+    fun findByMemberId(@Param("id") memberId: Long): Member?
 
     @Query("select m from Member m where m.isDeleted = 'false' and m.email = :email")
-    fun findByEmail(email: String?): Member?
+    fun findByEmail(email: String): Member?
 
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
-    fun findActiveById(@Param("id") memberId: Long?): Member?
+    fun findActiveById(@Param("id") memberId: Long): Member?
 }
