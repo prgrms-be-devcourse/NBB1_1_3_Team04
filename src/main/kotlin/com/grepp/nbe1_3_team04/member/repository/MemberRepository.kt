@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface MemberRepository : JpaRepository<Member, Long>, CustomMemberRepository { //CustomGlobalRepository {
+interface MemberRepository : JpaRepository<Member, Long>, CustomMemberRepository, CustomGlobalRepository<Member> { //CustomGlobalRepository {
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
     fun findByMemberId(@Param("id") memberId: Long): Member?
 
@@ -17,5 +17,5 @@ interface MemberRepository : JpaRepository<Member, Long>, CustomMemberRepository
     fun findByEmail(email: String): Member?
 
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
-    fun findActiveById(@Param("id") memberId: Long): Member?
+    override fun findActiveById(@Param("id") id: Long): Member?
 }
