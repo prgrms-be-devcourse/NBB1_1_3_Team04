@@ -1,9 +1,9 @@
 package com.grepp.nbe1_3_team04.stadium.api.request
 
-import com.grepp.nbe1_3_team04.stadium.service.request.StadiumRegisterServiceRequest
+import com.grepp.nbe1_3_team04.stadium.service.request.StadiumUpdateServiceRequest
 import jakarta.validation.constraints.*
 
-data class StadiumRegisterRequest(
+data class StadiumUpdateRequest(
     @field:NotBlank(message = "풋살장 이름은 필수입니다.")
     @field:Size(max = 100, message = "풋살장 이름은 최대 100자까지 가능합니다.")
     val name: String?,
@@ -31,8 +31,8 @@ data class StadiumRegisterRequest(
     @field:Max(value = 180, message = "경도 값은 180도 이하이어야 합니다.")
     val longitude: Double?
 ) {
-    fun toServiceRequest(): StadiumRegisterServiceRequest {
-        return StadiumRegisterServiceRequest(
+    fun toServiceRequest(): StadiumUpdateServiceRequest {
+        return StadiumUpdateServiceRequest(
             name = name!!,
             address = address!!,
             phoneNumber = phoneNumber!!,
