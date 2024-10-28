@@ -3,7 +3,6 @@ package com.grepp.nbe1_3_team04.team.domain
 import com.grepp.nbe1_3_team04.global.domain.BaseEntity
 import com.grepp.nbe1_3_team04.member.domain.Member
 import jakarta.persistence.*
-import jakarta.validation.constraints.NotNull
 import org.hibernate.annotations.SQLDelete
 
 
