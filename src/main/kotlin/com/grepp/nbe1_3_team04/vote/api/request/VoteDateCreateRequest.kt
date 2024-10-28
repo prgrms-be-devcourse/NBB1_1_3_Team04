@@ -19,9 +19,7 @@ data class VoteDateCreateRequest(
         return VoteDateCreateServiceRequest(
             title!!,
             endAt!!,
-            choices!!.stream()
-                .map<LocalDateTime>(DateChoices::choice)
-                .toList()
+            choices!!.map { it.choice }
         )
     }
 }

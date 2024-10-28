@@ -6,6 +6,6 @@ import jakarta.validation.ConstraintValidatorContext
 
 class DuplicateValidator : ConstraintValidator<Duplicate?, List<*>?> {
     override fun isValid(value: List<*>?, context: ConstraintValidatorContext?): Boolean {
-        return value!!.stream().distinct().count() == value.size.toLong()
+        return value!!.distinct().size == value.size
     }
 }
