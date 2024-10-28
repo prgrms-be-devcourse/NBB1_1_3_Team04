@@ -40,11 +40,11 @@ class CustomVoteRepositoryImpl(private val queryFactory: JPAQueryFactory) : Cust
 
     override fun findRecentlyVoteByTeamId(teamId: Long): Vote? {
         return queryFactory.select(QVote.vote)
+            .from(QVote.vote)
             .where(
                 QVote.vote.isDeleted.eq(IsDeleted.FALSE)
                     .and(QVote.vote.voteStatus.eq(VoteStatus.CLOSED))
             )
-            .from(QVote.vote)
             .orderBy(QVote.vote.updatedAt.desc())
             .fetchFirst()
     }
