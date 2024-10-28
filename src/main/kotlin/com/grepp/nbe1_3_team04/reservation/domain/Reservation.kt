@@ -2,8 +2,9 @@ package com.grepp.nbe1_3_team04.reservation.domain
 
 import com.grepp.nbe1_3_team04.global.domain.BaseEntity
 import com.grepp.nbe1_3_team04.member.domain.Member
+import com.grepp.nbe1_3_team04.stadium.domain.Court
+import com.grepp.nbe1_3_team04.team.domain.Team
 import jakarta.persistence.*
-import jakarta.validation.constraints.NotNull
 import org.hibernate.annotations.SQLDelete
 import java.time.LocalDateTime
 
