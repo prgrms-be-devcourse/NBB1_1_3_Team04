@@ -18,7 +18,7 @@ data class ChatResponse(
         requireNotNull(chat.chatId) { ExceptionMessage.REQUIRE_NOT_NULL_ID.text},
         requireNotNull(chat.createdAt) {ExceptionMessage.REQUIRE_NOT_NULL_CREATED_AT.text},
         requireNotNull(chat.updatedAt) {ExceptionMessage.REQUIRE_NOT_NULL_UPDATED_AT.text},
-        ChatroomResponse(chat.chatRoom),
+        ChatroomResponse(chat.chatroom),
         ChatMemberInfo(chat.member),
         chat.chatType,
         chat.text
