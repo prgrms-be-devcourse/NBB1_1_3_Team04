@@ -11,9 +11,9 @@ data class TeamCreateRequest(
 ) {
     fun toServiceRequest(): TeamDefaultServiceRequest {
         return TeamDefaultServiceRequest(
-            name!!,
-            description = description ?: "",
-            location = location ?: ""
+            name = name!!,
+            description = description,
+            location = location
         )
     }
 }
