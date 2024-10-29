@@ -13,7 +13,7 @@ class MemberOAuthResponse(
         fun from(member: Member): MemberOAuthResponse {
             return MemberOAuthResponse(
                 member.loginType.loginProvider,
-                member.loginType.snsId!!,
+                requireNotNull(member.loginType.snsId),
                 member.email
             )
         }
