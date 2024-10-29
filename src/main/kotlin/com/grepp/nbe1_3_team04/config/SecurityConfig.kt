@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.client.RestTemplate
@@ -45,8 +47,8 @@ class SecurityConfig(private val jwtTokenFilter: JwtTokenFilter,
     }
 
     @Bean
-    fun filterChain(httpSecurity: HttpSecurity): HttpSecurity {
-        httpSecurity
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http
             .csrf { it.disable() }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
@@ -68,7 +70,7 @@ class SecurityConfig(private val jwtTokenFilter: JwtTokenFilter,
             .addFilterBefore(exceptionHandlerFilter, JwtTokenFilter::class.java)
             .exceptionHandling { it.accessDeniedHandler(accessDeniedHandler()) }
 
-        return httpSecurity
+        return http.build()
     }
 
     @Bean
