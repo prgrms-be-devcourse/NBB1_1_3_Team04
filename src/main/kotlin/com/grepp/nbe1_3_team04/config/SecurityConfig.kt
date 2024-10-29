@@ -73,11 +73,11 @@ class SecurityConfig(private val jwtTokenFilter: JwtTokenFilter,
 
     @Bean
     fun accessDeniedHandler(): AccessDeniedHandler {
-        return AccessDeniedHandler { request: HttpServletRequest?, response: HttpServletResponse, accessDeniedException: AccessDeniedException? ->
+        return AccessDeniedHandler { _: HttpServletRequest?, response: HttpServletResponse, _: AccessDeniedException? ->
             val objectMapper = ObjectMapper()
             response.status = HttpServletResponse.SC_FORBIDDEN
             response.contentType = "application/json"
-            val apiResponse: ApiResponse<Any> = ApiResponse.of(
+            val apiResponse: ApiResponse<Any?> = ApiResponse.of(
                 HttpStatus.FORBIDDEN,
                 "권한이 없습니다.",
                 null
