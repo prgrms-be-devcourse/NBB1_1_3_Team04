@@ -36,7 +36,7 @@ class CustomChatRepositoryImpl (
             .from(QChat.chat)
             .where(
                 QChat.chat.isDeleted.eq(IsDeleted.FALSE)
-                    .and(QChat.chat.chatRoom.eq(chatroom))
+                    .and(QChat.chat.chatroom.eq(chatroom))
             )
             .fetchOne()
     }
@@ -47,7 +47,7 @@ class CustomChatRepositoryImpl (
             .from(QChat.chat)
             .where(
                 QChat.chat.isDeleted.eq(IsDeleted.FALSE)
-                    .and(QChat.chat.chatRoom.eq(chatroom))
+                    .and(QChat.chat.chatroom.eq(chatroom))
             )
             .orderBy(QChat.chat.createdAt.desc())
             .offset(pageable.offset) // 페이지 번호
