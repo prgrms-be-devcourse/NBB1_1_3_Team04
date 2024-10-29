@@ -11,9 +11,10 @@ import java.util.function.Consumer
 @Repository
 class RedisChatroomRepository (
     private val chatroomRepository: ChatroomRepository,
-    private val redisTemplate: RedisTemplate<String, Any>,
-    private var opsHashChatRoom: HashOperations<String, Long, Chatroom>
+    private val redisTemplate: RedisTemplate<String, Any>
 ) : CommandLineRunner {
+
+    private lateinit var opsHashChatRoom: HashOperations<String, Long, Chatroom>
 
     @PostConstruct
     private fun start() {
