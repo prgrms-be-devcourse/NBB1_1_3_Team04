@@ -13,7 +13,7 @@ data class ReservationInfoResponse(
     companion object {
         fun from(reservation: Reservation): ReservationInfoResponse {
             return ReservationInfoResponse(
-                reservation.court.getName(),
+                reservation.court.name,
                 reservation.matchDate,
                 reservation.reservationStatus
             )

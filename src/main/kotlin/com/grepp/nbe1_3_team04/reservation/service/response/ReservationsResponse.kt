@@ -14,19 +14,21 @@ data class ReservationsResponse(
     @field:JsonFormat(
         shape = JsonFormat.Shape.STRING,
         pattern = "yyyy-MM-dd'T'HH:mm:ss"
-    ) @param:JsonFormat(
+    )
+    @param:JsonFormat(
         shape = JsonFormat.Shape.STRING,
         pattern = "yyyy-MM-dd'T'HH:mm:ss"
-    ) val matchDate: LocalDateTime,
+    )
+    val matchDate: LocalDateTime,
     val gender: ParticipantGender
 ) {
     companion object {
         fun from(reservation: Reservation): ReservationsResponse {
             return ReservationsResponse(
                 requireNotNull(reservation.reservationId) { ExceptionMessage.REQUIRE_NOT_NULL_ID.text},
-                reservation.court.getCourtId(),
+                requireNotNull(reservation.court.courtId) { ExceptionMessage.REQUIRE_NOT_NULL_ID.text},
                 requireNotNull(reservation.member.memberId) { ExceptionMessage.REQUIRE_NOT_NULL_ID.text},
-                reservation.team.getTeamId(),
+                requireNotNull(reservation.team.teamId) { ExceptionMessage.REQUIRE_NOT_NULL_ID.text},
                 reservation.matchDate,
                 reservation.gender
             )
