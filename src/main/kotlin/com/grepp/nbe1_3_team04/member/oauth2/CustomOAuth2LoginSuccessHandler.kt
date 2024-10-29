@@ -39,8 +39,8 @@ class CustomOAuth2LoginSuccessHandler(
         val member: Member? = oAuth2User.member
 
         val objectMapper = ObjectMapper()
-        response.setContentType("application/json")
-        response.setCharacterEncoding("UTF-8")
+        response.contentType = "application/json"
+        response.characterEncoding = "UTF-8"
 
         member?.let {
             // 최초 로그인인 경우
@@ -50,7 +50,7 @@ class CustomOAuth2LoginSuccessHandler(
                     MemberOAuthResponse.from(member)
                 )
                 val jsonResponse = objectMapper.writeValueAsString(apiResponse)
-                response.getWriter().write(jsonResponse)
+                response.writer.write(jsonResponse)
                 return
             }
             // 회원 가입 기록이 있으면
@@ -70,7 +70,7 @@ class CustomOAuth2LoginSuccessHandler(
             )
             cookieService.setHeader(response, tokenResponse.refreshToken) // 쿠키에 refreshToken 저장
             val jsonResponse = objectMapper.writeValueAsString(apiResponse)
-            response.getWriter().write(jsonResponse)
+            response.writer.write(jsonResponse)
 
         }
     }

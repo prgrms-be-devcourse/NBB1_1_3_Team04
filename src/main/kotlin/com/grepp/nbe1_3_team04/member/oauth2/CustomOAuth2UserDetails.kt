@@ -8,12 +8,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 class CustomOAuth2UserDetails(val member: Member?, val attributes: Map<String, Any>) : UserDetails, OAuth2User {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        val collection: MutableCollection<GrantedAuthority> = ArrayList<GrantedAuthority>()
-        collection.add(object : GrantedAuthority {
-            override fun getAuthority(): String? {
-                return member?.memberRole?.text
-            }
-        })
+        val collection: MutableCollection<GrantedAuthority> = ArrayList()
+        collection.add(GrantedAuthority { member?.memberRole?.text })
 
         return collection
     }

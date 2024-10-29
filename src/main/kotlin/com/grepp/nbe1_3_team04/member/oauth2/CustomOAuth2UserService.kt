@@ -16,7 +16,7 @@ class CustomOAuth2UserService(private val memberRepository: MemberRepository) : 
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User: OAuth2User = super.loadUser(userRequest)
 
-        val provider: String = userRequest.getClientRegistration().getRegistrationId()
+        val provider: String = userRequest.clientRegistration.registrationId
 
         var oAuth2MemberDetails: OAuth2MemberDetails? = null
         var member : Member? = null
@@ -33,10 +33,11 @@ class CustomOAuth2UserService(private val memberRepository: MemberRepository) : 
             val name: String = oAuth2MemberDetails.name
             val loginProvider: LoginProvider = oAuth2MemberDetails.provider
 
+            // 임시 유저 생성
             member = memberRepository.findByEmail(email) ?: Member.create(email, null, name, "", loginProvider, snsId, Gender.TEMP, MemberRole.GUEST, TermsAgreed.DISAGREE)
         }
 
 
-        return CustomOAuth2UserDetails(member, oAuth2User.getAttributes())
+        return CustomOAuth2UserDetails(member, oAuth2User.attributes)
     }
 }
