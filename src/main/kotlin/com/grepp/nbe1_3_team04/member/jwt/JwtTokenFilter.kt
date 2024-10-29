@@ -22,34 +22,27 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val cookieRefreshToken = getRefreshTokenByRequest(request)
         val accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN)
-        val refreshToken = jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
-        if (cookieRefreshToken != null) {
-            processSecurity(accessToken, cookieRefreshToken)
-        }
+        val refreshToken = getRefreshTokenByRequest(request) ?: jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
 
-        if (cookieRefreshToken == null) {
-            processSecurity(accessToken, refreshToken)
-        }
-
+        processSecurity(accessToken, refreshToken)
         filterChain.doFilter(request, response)
     }
 
     @Throws(ServletException::class)
     private fun processSecurity(accessToken: String?, refreshToken: String?) {
-        if (accessToken != null) {
-            jwtTokenUtil.tokenValidation(accessToken)
+        accessToken?.let{
+            jwtTokenUtil.tokenValidation(it)
+            val isLogout = redisTemplate.opsForValue().get(it) as String
 
-            val isLogout = redisTemplate.opsForValue().get(accessToken) as String
-
-            if (ObjectUtils.isEmpty(isLogout)) {
-                setAuthentication(jwtTokenUtil.getEmailFromToken(accessToken))
+            if(ObjectUtils.isEmpty(isLogout)){
+                setAuthentication(jwtTokenUtil.getEmailFromToken(it))
             }
-        }
-        if (accessToken == null && refreshToken != null) {
-            jwtTokenUtil.refreshTokenValidation(refreshToken)
-            setAuthentication(jwtTokenUtil.getEmailFromToken(refreshToken))
+        } ?: run {
+            refreshToken?.let {
+                jwtTokenUtil.refreshTokenValidation(it)
+                setAuthentication(jwtTokenUtil.getEmailFromToken(it))
+            }
         }
     }
 
