@@ -2,7 +2,7 @@ package com.grepp.nbe1_3_team04.chat.repository
 
 import com.grepp.nbe1_3_team04.chat.domain.Chat
 import com.grepp.nbe1_3_team04.chat.domain.Chatroom
-import com.grepp.nbe1_3_team04.chat.domain.QChat
+import com.grepp.nbe1_3_team04.chat.domain.QChat.chat
 import com.grepp.nbe1_3_team04.chat.service.response.ChatResponse
 import com.grepp.nbe1_3_team04.global.domain.IsDeleted
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -32,24 +32,24 @@ class CustomChatRepositoryImpl (
     //Page<> 형태로 반환할 때 PageImpl에 사용
     private fun getCount(chatroom: Chatroom): Long? {
         return queryFactory
-            .select(QChat.chat.count())
-            .from(QChat.chat)
+            .select(chat.count())
+            .from(chat)
             .where(
-                QChat.chat.isDeleted.eq(IsDeleted.FALSE)
-                    .and(QChat.chat.chatroom.eq(chatroom))
+                chat.isDeleted.eq(IsDeleted.FALSE)
+                    .and(chat.chatroom.eq(chatroom))
             )
             .fetchOne()
     }
 
     private fun getChatList(chatroom: Chatroom, pageable: Pageable): MutableList<Chat> {
         return queryFactory
-            .select(QChat.chat)
-            .from(QChat.chat)
+            .select(chat)
+            .from(chat)
             .where(
-                QChat.chat.isDeleted.eq(IsDeleted.FALSE)
-                    .and(QChat.chat.chatroom.eq(chatroom))
+                chat.isDeleted.eq(IsDeleted.FALSE)
+                    .and(chat.chatroom.eq(chatroom))
             )
-            .orderBy(QChat.chat.createdAt.desc())
+            .orderBy(chat.createdAt.desc())
             .offset(pageable.offset) // 페이지 번호
             .limit((pageable.pageSize + 1).toLong()) // 페이지 사이즈
             .fetch()
