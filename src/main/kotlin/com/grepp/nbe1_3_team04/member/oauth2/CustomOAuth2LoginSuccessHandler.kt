@@ -44,7 +44,7 @@ class CustomOAuth2LoginSuccessHandler(
 
         member?.let {
             // 최초 로그인인 경우
-            if (member.memberRole === MemberRole.GUEST) {
+            if (member.memberRole == MemberRole.GUEST) {
                 val apiResponse: ApiResponse<MemberOAuthResponse> = ApiResponse.of(
                     HttpStatus.OK,
                     MemberOAuthResponse.from(member)
