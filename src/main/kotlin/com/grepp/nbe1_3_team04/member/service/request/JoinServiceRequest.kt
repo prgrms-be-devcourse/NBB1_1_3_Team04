@@ -8,7 +8,7 @@ data class JoinServiceRequest(
     val name: String,
     val phoneNumber: String,
     val loginProvider: LoginProvider,
-    val snsId: String,
+    val snsId: String?,
     val gender: Gender,
     val memberRole: MemberRole,
     val termsAgree: TermsAgreed
