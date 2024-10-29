@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.core.user.OAuth2User
 
-class CustomOAuth2UserDetails(val member: Member?, val attributes: Map<String, Any>) : UserDetails, OAuth2User {
+class CustomOAuth2UserDetails(val member: Member?, private val attributes: Map<String, Any>) : UserDetails, OAuth2User {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val collection: MutableCollection<GrantedAuthority> = ArrayList()
@@ -25,6 +25,7 @@ class CustomOAuth2UserDetails(val member: Member?, val attributes: Map<String, A
     override fun getAttributes(): Map<String, Any> {
         return attributes
     }
+
 
     override fun getUsername(): String? {
         return member?.email
