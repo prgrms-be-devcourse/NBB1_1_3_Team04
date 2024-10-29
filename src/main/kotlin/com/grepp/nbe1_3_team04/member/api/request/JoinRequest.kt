@@ -15,19 +15,19 @@ import jakarta.validation.constraints.Pattern
 data class JoinRequest(
     @field: NotBlank(message = "이메일은 필수입니다.") @Email(message = "형식이 이메일이어야 합니다.")
     val email:String?,
-    @Pattern(
+    @field: Pattern(
         regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,16}$",
         message = "비밀번호는 8~16자 사이  숫자, 영문자, 특수 문자를 각각 최소 한 개 이상 포함하여야 합니다."
     )
     val password: String?,
-    @Pattern(
+    @field: Pattern(
         regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,16}$",
         message = "비밀번호는 8~16자 사이  숫자, 영문자, 특수 문자를 각각 최소 한 개 이상 포함하여야 합니다."
     )
     val passwordConfirm: String?,
     @field: NotBlank(message = "이름이 빈 칸 입니다.")
     val name:  String?,
-    @Pattern(
+    @field: Pattern(
         regexp = "^010-\\d{3,4}-\\d{4}$",
         message = "휴대폰 번호는 010으로 시작하는 11자리 숫자와 '-'로 구성되어야 합니다."
     )
