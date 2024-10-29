@@ -5,7 +5,7 @@ import com.grepp.nbe1_3_team04.member.domain.Member
 
 class MemberOAuthResponse(
     val provider: LoginProvider,
-    val snsId: String?,
+    val snsId: String,
     val email: String
 ) {
 
@@ -13,7 +13,7 @@ class MemberOAuthResponse(
         fun from(member: Member): MemberOAuthResponse {
             return MemberOAuthResponse(
                 member.loginType.loginProvider,
-                member.loginType.snsId,
+                member.loginType.snsId!!,
                 member.email
             )
         }
