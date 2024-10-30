@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit
 
 @Service
 class MemberServiceImpl(private val memberRepository: MemberRepository,
-                        private val jwtSecurityConfig: SecurityConfig,
                         private val jwtTokenUtil: JwtTokenUtil,
                         private val redisTemplate: RedisTemplate<String, Any>,
                         private val passwordEncoder: BCryptPasswordEncoder) : MemberService {
@@ -31,7 +30,7 @@ class MemberServiceImpl(private val memberRepository: MemberRepository,
         checkDuplicateEmail(serviceRequest.email)
         val member: Member = serviceRequest.toEntity()
 
-        member.password?.let { member.encodePassword(jwtSecurityConfig.passwordEncoder()) }
+        member.password?.let { member.encodePassword(passwordEncoder) }
 
         memberRepository.save(member)
         return MemberResponse.from(member)
@@ -107,7 +106,7 @@ class MemberServiceImpl(private val memberRepository: MemberRepository,
     }
 
     private fun checkPasswordMatch(password: String?, passwordConfirm: String?){
-        require(jwtSecurityConfig.passwordEncoder().matches(password, passwordConfirm)) { "패스워드가 일치하지 않습니다." }
+        require(passwordEncoder.matches(password, passwordConfirm)) { "패스워드가 일치하지 않습니다." }
     }
 
     private fun convertToTokenResponseFrom(token: String): TokenResponse{
