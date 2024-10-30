@@ -122,7 +122,6 @@ class ReservationServiceImpl(
                     ParticipantRole.MEMBER
                 )
             }
-            .toList()
     }
 
     private fun publishChatEventsOf(reservation: Reservation, participants: List<Participant>) {
