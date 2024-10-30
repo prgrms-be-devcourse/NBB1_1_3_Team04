@@ -19,14 +19,14 @@ data class CourtUpdateRequest(
 
     @field:NotNull(message = "시간당 요금은 필수입니다.")
     @field:PositiveOrZero(message = "요금은 음수가 될 수 없습니다.")
-    val price_per_hour: BigDecimal?
+    val pricePerHour: BigDecimal?
 ) {
     fun toServiceRequest(): CourtUpdateServiceRequest {
         return CourtUpdateServiceRequest(
             stadiumId = stadiumId!!,
             name = name!!,
             description = description,
-            price_per_hour = price_per_hour!!
+            pricePerHour = pricePerHour!!
         )
     }
 }
