@@ -8,9 +8,7 @@ import com.grepp.nbe1_3_team04.vote.service.request.VoteDateCreateServiceRequest
 import com.grepp.nbe1_3_team04.vote.service.request.VoteUpdateServiceRequest
 import com.grepp.nbe1_3_team04.vote.service.response.AllVoteResponse
 import com.grepp.nbe1_3_team04.vote.service.response.VoteResponse
-import org.springframework.stereotype.Component
 
-@Component
 interface VoteService {
     fun createCourtVote(request: VoteCourtCreateServiceRequest, teamId: Long, member: Member): VoteResponse
 
