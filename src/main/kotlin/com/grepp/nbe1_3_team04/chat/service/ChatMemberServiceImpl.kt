@@ -200,7 +200,7 @@ class ChatMemberServiceImpl(
 
     private fun checkMemberNotInChatroom(member: Member, chatroom: Chatroom) {
         require(
-            !chatMemberRepository!!.existByMemberAndChatroom(
+            !chatMemberRepository.existByMemberAndChatroom(
                 member,
                 chatroom
             )
