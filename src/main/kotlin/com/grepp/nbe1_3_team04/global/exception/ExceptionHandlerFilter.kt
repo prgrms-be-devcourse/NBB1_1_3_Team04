@@ -30,6 +30,9 @@ class ExceptionHandlerFilter : OncePerRequestFilter() {
         } catch (e: JwtException) {
             log.error(e.message)
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, e)
+        }  catch (e: IllegalArgumentException){
+            log.error(e.message)
+            setErrorResponse(HttpStatus.BAD_REQUEST, response, e)
         }
     }
 

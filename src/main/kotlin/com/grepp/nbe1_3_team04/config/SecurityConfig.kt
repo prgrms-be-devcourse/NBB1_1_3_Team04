@@ -33,7 +33,7 @@ class SecurityConfig(private val jwtTokenFilter: JwtTokenFilter,
                      private val customOAuth2LoginSuccessHandler: CustomOAuth2LoginSuccessHandler) {
 
     private val loginUrls = arrayOf("/api/v1/members/join", "/api/v1/members/login")
-    private val permitUrls = arrayOf("/api/v1/court/**", "/api/v1/stadium/**","/api/v1/team/{teamId}/info","/ws")
+    private val permitUrls = arrayOf("/api/v1/court/**", "/api/v1/stadium/**","/api/v1/team/{teamId}/info","/ws", "/h2-console", "/h2-console/**")
     private val merchantUrls = arrayOf("/api/v1/merchant/**")
 
     @Bean
