@@ -73,7 +73,7 @@ class Member private constructor(
             name: String,
             phoneNumber: String,
             loginProvider: LoginProvider,
-            snsId: String,
+            snsId: String?,
             gender: Gender,
             memberRole: MemberRole,
             termsAgreed: TermsAgreed
@@ -90,8 +90,5 @@ class Member private constructor(
             )
         }
 
-//        fun createTemporary(email: String?, name: String?, loginProvider: LoginProvider, snsId: String?): Member {
-//            return Member(email, null, name, null, LoginType(loginProvider, snsId), null, null, null)
-//        }
     }
 }
