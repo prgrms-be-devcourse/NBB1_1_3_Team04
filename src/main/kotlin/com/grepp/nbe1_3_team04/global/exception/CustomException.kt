@@ -1,8 +1,3 @@
-package com.grepp.nbe1_3_team04.global.exception;
+package com.grepp.nbe1_3_team04.global.exception
 
-public class CustomException extends RuntimeException {
-    public CustomException(String message) {
-        super(message);
-    }
-
-}
+class CustomException(message: String?) : RuntimeException(message)
