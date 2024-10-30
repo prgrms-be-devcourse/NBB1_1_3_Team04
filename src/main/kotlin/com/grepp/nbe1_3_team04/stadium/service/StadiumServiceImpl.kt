@@ -92,7 +92,7 @@ class StadiumServiceImpl(
         member: Member,
         stadiumId: Long
     ): StadiumDetailResponse {
-        val memberId: Long = member.memberId ?: throw IllegalArgumentException("Member ID는 null일 수 없습니다.")
+        val memberId: Long = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
         val stadium = validateStadiumOwnership(memberId, stadiumId)
 
@@ -111,7 +111,7 @@ class StadiumServiceImpl(
 
     @Transactional
     override fun deleteStadium(member: Member, stadiumId: Long) {
-        val memberId: Long = member.memberId ?: throw IllegalArgumentException("Member ID는 null일 수 없습니다.")
+        val memberId: Long = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
         val stadium = validateStadiumOwnership(memberId, stadiumId)
 

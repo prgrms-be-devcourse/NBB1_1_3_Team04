@@ -14,6 +14,7 @@ enum class ExceptionMessage(text: String) {
 
     // Member
     MEMBER_NOT_FOUND("해당 유저를 찾을 수 없습니다."),
+    MEMBER_ABNORMAL("비정상적인 회원정보입니다."),
 
     // Chat
     CHAT_NOT_FOUND("해당 채팅을 찾을 수 없습니다."),

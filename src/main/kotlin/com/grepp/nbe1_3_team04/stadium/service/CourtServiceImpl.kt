@@ -62,7 +62,7 @@ class CourtServiceImpl(
 
     @Transactional
     override fun registerCourt(request: CourtRegisterServiceRequest, member: Member): CourtDetailResponse {
-        val memberId: Long = member.memberId ?: throw IllegalArgumentException("Member ID는 null일 수 없습니다.")
+        val memberId: Long = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
         val stadium = validateStadiumOwnership(request.stadiumId, memberId)
 
@@ -79,7 +79,7 @@ class CourtServiceImpl(
 
     @Transactional
     override fun updateCourt(request: CourtUpdateServiceRequest, member: Member, courtId: Long): CourtDetailResponse {
-        val memberId: Long = member.memberId ?: throw IllegalArgumentException("Member ID는 null일 수 없습니다.")
+        val memberId: Long = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
         validateStadiumOwnership(request.stadiumId, memberId)
 
@@ -102,7 +102,7 @@ class CourtServiceImpl(
 
     @Transactional
     override fun deleteCourt(request: CourtDeleteServiceRequest, member: Member, courtId: Long) {
-        val memberId: Long = member.memberId ?: throw IllegalArgumentException("Member ID는 null일 수 없습니다.")
+        val memberId: Long = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
         validateStadiumOwnership(request.stadiumId, memberId)
 
