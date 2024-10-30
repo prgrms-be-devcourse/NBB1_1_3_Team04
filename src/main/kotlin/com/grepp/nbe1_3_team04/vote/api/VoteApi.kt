@@ -46,7 +46,7 @@ class VoteApi(private val voteService: VoteService) {
             voteService.createDateVote(
                 request.toServiceRequest(),
                 teamId,
-                principalDetails.member()
+                principalDetails.member
             )
         )
     }
@@ -56,7 +56,7 @@ class VoteApi(private val voteService: VoteService) {
         @PathVariable voteId: Long,
         @AuthenticationPrincipal principalDetails: PrincipalDetails
     ): ApiResponse<Long> {
-        return ApiResponse.ok(voteService.deleteVote(voteId, principalDetails.member()))
+        return ApiResponse.ok(voteService.deleteVote(voteId, principalDetails.member))
     }
 
     @PutMapping("{voteId}")
