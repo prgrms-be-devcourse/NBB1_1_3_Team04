@@ -6,9 +6,7 @@ import com.grepp.nbe1_3_team04.chat.service.response.ChatMemberResponse
 import com.grepp.nbe1_3_team04.member.domain.Member
 import com.grepp.nbe1_3_team04.reservation.domain.Participant
 import com.grepp.nbe1_3_team04.team.domain.TeamMember
-import org.springframework.stereotype.Service
 
-@Service
 interface ChatMemberService {
     fun joinChatMember(request: ChatMemberServiceRequest): ChatMemberResponse
 
