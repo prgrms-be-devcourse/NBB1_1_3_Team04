@@ -82,10 +82,11 @@ class Reservation private constructor(
             )
         }
 
-        fun createMaleReadyReservation(
+        fun createReadyReservation(
             court: Court,
             member: Member,
             team: Team,
+            gender: ParticipantGender,
             matchDate: LocalDateTime
         ): Reservation {
             return Reservation(
@@ -94,46 +95,15 @@ class Reservation private constructor(
                 team = team,
                 matchDate = matchDate,
                 reservationStatus = ReservationStatus.READY,
-                gender = ParticipantGender.MALE
+                gender = gender
             )
         }
 
-        fun createFemaleReadyReservation(
+        fun createRecruitReservation(
             court: Court,
             member: Member,
             team: Team,
-            matchDate: LocalDateTime
-        ): Reservation {
-            return Reservation(
-                court = court,
-                member = member,
-                team = team,
-                matchDate = matchDate,
-                reservationStatus = ReservationStatus.READY,
-                gender = ParticipantGender.FEMALE
-            )
-        }
-
-        fun createMixedReadyReservation(
-            court: Court,
-            member: Member,
-            team: Team,
-            matchDate: LocalDateTime
-        ): Reservation {
-            return Reservation(
-                court = court,
-                member = member,
-                team = team,
-                matchDate = matchDate,
-                reservationStatus = ReservationStatus.READY,
-                gender = ParticipantGender.MIXED
-            )
-        }
-
-        fun createMaleRecruitReservation(
-            court: Court,
-            member: Member,
-            team: Team,
+            gender: ParticipantGender,
             matchDate: LocalDateTime
         ): Reservation {
             return Reservation(
@@ -142,39 +112,7 @@ class Reservation private constructor(
                 team = team,
                 matchDate = matchDate,
                 reservationStatus = ReservationStatus.RECRUITING,
-                gender = ParticipantGender.MALE
-            )
-        }
-
-        fun createFemaleRecruitReservation(
-            court: Court,
-            member: Member,
-            team: Team,
-            matchDate: LocalDateTime
-        ): Reservation {
-            return Reservation(
-                court = court,
-                member = member,
-                team = team,
-                matchDate = matchDate,
-                reservationStatus = ReservationStatus.RECRUITING,
-                gender = ParticipantGender.FEMALE
-            )
-        }
-
-        fun createMixedRecruitReservation(
-            court: Court,
-            member: Member,
-            team: Team,
-            matchDate: LocalDateTime
-        ): Reservation {
-            return Reservation(
-                court = court,
-                member = member,
-                team = team,
-                matchDate = matchDate,
-                reservationStatus = ReservationStatus.RECRUITING,
-                gender = ParticipantGender.MIXED
+                gender = gender
             )
         }
     }
