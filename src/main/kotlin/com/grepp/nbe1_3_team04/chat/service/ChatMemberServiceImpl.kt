@@ -101,13 +101,13 @@ class ChatMemberServiceImpl(
      */
     @Transactional
     override fun joinChatMembers(members: List<Member>, chatroom: Chatroom) {
-        val oldMembersId = chatMemberRepository.findByChatroom(chatroom)
+        val oldMemberIds = chatMemberRepository.findByChatroom(chatroom)
             .map { it.member.memberId }
 
         val chatMembers: MutableList<ChatMember> = ArrayList()
 
         for (member in members) {
-            if (oldMembersId.contains(member.memberId)) {
+            if (oldMemberIds.contains(member.memberId)) {
                 continue
             }
             chatMembers.add(ChatMember.create(member, chatroom))
