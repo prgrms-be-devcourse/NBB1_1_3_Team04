@@ -9,7 +9,6 @@ import com.grepp.nbe1_3_team04.stadium.service.response.StadiumsResponse
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Component
 
-@Component
 interface StadiumService {
     fun getStadiumList(page: Int, sort: String): Slice<StadiumsResponse>
 
