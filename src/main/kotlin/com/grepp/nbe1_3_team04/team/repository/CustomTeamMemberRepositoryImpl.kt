@@ -12,8 +12,7 @@ class CustomTeamMemberRepositoryImpl(
 
     override fun findByTeamIdAndMemberId(teamId: Long, memberId: Long): TeamMember? {
         return queryFactory
-                .select(teamMember)
-                .from(teamMember)
+                .selectFrom(teamMember)
                 .where(
                     teamMember.team.teamId.eq(teamId)
                         .and(teamMember.member.memberId.eq(memberId))
