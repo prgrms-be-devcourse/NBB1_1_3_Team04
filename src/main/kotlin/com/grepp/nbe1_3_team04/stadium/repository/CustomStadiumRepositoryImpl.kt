@@ -1,15 +1,14 @@
 package com.grepp.nbe1_3_team04.stadium.repository
 
 import com.grepp.nbe1_3_team04.global.domain.IsDeleted
+import com.grepp.nbe1_3_team04.stadium.domain.QStadium.stadium
 import com.grepp.nbe1_3_team04.stadium.domain.Stadium
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.core.types.dsl.NumberTemplate
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
-import org.springframework.data.domain.Pageable
-
-import com.grepp.nbe1_3_team04.stadium.domain.QStadium.stadium
 
 class CustomStadiumRepositoryImpl(
     private val queryFactory: JPAQueryFactory
@@ -33,7 +32,7 @@ class CustomStadiumRepositoryImpl(
         longitude: Double
     ): NumberTemplate<Double> {
         return Expressions.numberTemplate(
-            Double::class.java,
+            Double::class.javaObjectType,
             "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
             latitude, stadium.position.latitude, stadium.position.longitude, longitude
         )
