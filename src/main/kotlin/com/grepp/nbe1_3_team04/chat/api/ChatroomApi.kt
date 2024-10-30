@@ -5,7 +5,9 @@ import com.grepp.nbe1_3_team04.chat.service.ChatroomService
 import com.grepp.nbe1_3_team04.chat.service.response.ChatroomResponse
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
 import jakarta.validation.Valid
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import team4.footwithme.member.jwt.PrincipalDetails
 
 
 @RestController
@@ -40,5 +42,13 @@ class ChatroomApi(
         @RequestBody chatroomRequest: @Valid ChatroomRequest
     ): ApiResponse<ChatroomResponse> {
         return ApiResponse.ok(chatroomService.updateChatroom(chatroomId, chatroomRequest.toServiceRequest()))
+    }
+
+    /**
+     * 채팅방 조회
+     */
+    @GetMapping
+    fun getMyChatroomList(@AuthenticationPrincipal principalDetails: PrincipalDetails): ApiResponse<List<ChatroomResponse>> {
+        return ApiResponse.ok(chatroomService.getMyChatroom(principalDetails.member))
     }
 }

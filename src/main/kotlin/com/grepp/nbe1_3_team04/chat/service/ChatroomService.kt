@@ -2,6 +2,8 @@ package com.grepp.nbe1_3_team04.chat.service
 
 import com.grepp.nbe1_3_team04.chat.service.request.ChatroomServiceRequest
 import com.grepp.nbe1_3_team04.chat.service.response.ChatroomResponse
+import com.grepp.nbe1_3_team04.member.domain.Member
+
 
 interface ChatroomService {
     fun createChatroom(request: ChatroomServiceRequest): ChatroomResponse
@@ -17,4 +19,6 @@ interface ChatroomService {
     fun deleteTeamChatroom(teamId: Long): Long
 
     fun deleteReservationChatroom(reservationId: Long): Long
+
+    fun getMyChatroom(member: Member): List<ChatroomResponse>
 }
