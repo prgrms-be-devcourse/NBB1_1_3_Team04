@@ -22,7 +22,8 @@ abstract class BaseEntity {
     @JsonDeserialize(using = LocalDateTimeDeserializer::class)
     @CreatedDate
     @Column(updatable = false)
-    val createdAt: LocalDateTime? = null
+    var createdAt: LocalDateTime? = null
+        protected set
 
     @JsonSerialize(using = LocalDateTimeSerializer::class)
     @JsonDeserialize(using = LocalDateTimeDeserializer::class)

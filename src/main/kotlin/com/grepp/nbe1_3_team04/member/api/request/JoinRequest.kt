@@ -33,7 +33,8 @@ data class JoinRequest(
     )
     @field: NotBlank(message = "전화번호는 필수입니다.")
     val phoneNumber: String?,
-    val loginProvider: LoginProvider,
+    @field: NotNull(message = "loginProvider 는 필수입니다.")
+    val loginProvider: LoginProvider?,
     val snsId: String?,
     val gender: Gender,
     val memberRole: MemberRole,
@@ -46,7 +47,7 @@ data class JoinRequest(
             password,
             name!!,
             phoneNumber!!,
-            loginProvider,
+            loginProvider!!,
             snsId,
             gender,
             memberRole,
