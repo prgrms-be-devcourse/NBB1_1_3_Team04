@@ -1,10 +1,12 @@
 package com.grepp.nbe1_3_team04.reservation.api
 
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
+import com.grepp.nbe1_3_team04.reservation.api.request.ReservationUpdateRequest
 import com.grepp.nbe1_3_team04.reservation.service.ReservationService
 import com.grepp.nbe1_3_team04.reservation.service.response.ReservationInfoDetailsResponse
 import com.grepp.nbe1_3_team04.reservation.service.response.ReservationInfoResponse
 import com.grepp.nbe1_3_team04.reservation.service.response.ReservationsResponse
+import jakarta.validation.Valid
 import org.springframework.data.domain.Slice
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -48,5 +50,13 @@ class ReservationApi(
         @AuthenticationPrincipal principalDetails: PrincipalDetails
     ): ApiResponse<Long> {
         return ApiResponse.ok(reservationService.deleteReservation(reservationId, principalDetails.member))
+    }
+
+    @PutMapping("/update/status")
+    fun updateReservationStatus(
+        @RequestBody @Valid request: ReservationUpdateRequest,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<ReservationInfoResponse> {
+        return ApiResponse.ok(reservationService.changeStatus(request.toServiceRequest(), principalDetails.member))
     }
 }
