@@ -3,8 +3,9 @@ package com.grepp.nbe1_3_team04.team.service
 import com.grepp.nbe1_3_team04.member.domain.Member
 import com.grepp.nbe1_3_team04.team.service.request.TeamMemberServiceRequest
 import com.grepp.nbe1_3_team04.team.service.response.TeamResponse
+import org.springframework.stereotype.Component
 
-
+@Component
 interface TeamMemberService {
     fun addTeamMembers(teamId: Long, request: TeamMemberServiceRequest): List<TeamResponse>
 
