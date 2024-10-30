@@ -22,7 +22,6 @@ class CourtMerchantApi(
         private val log = LoggerFactory.getLogger(CourtMerchantApi::class.java)
     }
 
-    //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PostMapping("/register")
     fun registerCourt(
         @Validated @RequestBody request: CourtRegisterRequest,
@@ -32,7 +31,6 @@ class CourtMerchantApi(
         return ApiResponse.created(courtDetail)
     }
 
-    //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PutMapping("/{courtId}")
     fun updateCourt(
         @PathVariable courtId: Long,
@@ -43,7 +41,6 @@ class CourtMerchantApi(
         return ApiResponse.ok(courtDetail)
     }
 
-    //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @DeleteMapping("/{courtId}")
     fun deleteCourt(
         @PathVariable courtId: Long,

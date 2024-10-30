@@ -21,7 +21,6 @@ class StadiumMerchantApi(
         private val log = LoggerFactory.getLogger(StadiumMerchantApi::class.java)
     }
 
-    //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PostMapping("/register")
     fun registerStadium(
         @Validated @RequestBody request: StadiumRegisterRequest,
@@ -31,7 +30,6 @@ class StadiumMerchantApi(
         return ApiResponse.created(stadiumDetail)
     }
 
-    //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PutMapping("/{stadiumId}")
     fun updateStadium(
         @PathVariable stadiumId: Long,
@@ -42,7 +40,6 @@ class StadiumMerchantApi(
         return ApiResponse.ok(stadiumDetail)
     }
 
-    //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @DeleteMapping("/{stadiumId}")
     fun deleteStadium(
         @PathVariable stadiumId: Long,
