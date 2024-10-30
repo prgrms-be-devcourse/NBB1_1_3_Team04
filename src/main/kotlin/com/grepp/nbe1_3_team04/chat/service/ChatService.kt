@@ -6,9 +6,7 @@ import com.grepp.nbe1_3_team04.chat.service.response.ChatResponse
 import com.grepp.nbe1_3_team04.member.domain.Member
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
-import org.springframework.stereotype.Service
 
-@Service
 interface ChatService {
     fun sendMessage(request: ChatServiceRequest, token: String)
 
