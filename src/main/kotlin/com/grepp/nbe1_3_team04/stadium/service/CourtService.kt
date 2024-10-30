@@ -7,7 +7,9 @@ import com.grepp.nbe1_3_team04.stadium.service.request.CourtUpdateServiceRequest
 import com.grepp.nbe1_3_team04.stadium.service.response.CourtDetailResponse
 import com.grepp.nbe1_3_team04.stadium.service.response.CourtsResponse
 import org.springframework.data.domain.Slice
+import org.springframework.stereotype.Component
 
+@Component
 interface CourtService {
     fun getCourtsByStadiumId(stadiumId: Long, page: Int, sort: String): Slice<CourtsResponse>
 
