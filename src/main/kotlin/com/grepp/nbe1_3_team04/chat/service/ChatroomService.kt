@@ -2,9 +2,7 @@ package com.grepp.nbe1_3_team04.chat.service
 
 import com.grepp.nbe1_3_team04.chat.service.request.ChatroomServiceRequest
 import com.grepp.nbe1_3_team04.chat.service.response.ChatroomResponse
-import org.springframework.stereotype.Service
 
-@Service
 interface ChatroomService {
     fun createChatroom(request: ChatroomServiceRequest): ChatroomResponse
 
