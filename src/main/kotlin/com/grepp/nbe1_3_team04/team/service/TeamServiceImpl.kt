@@ -57,8 +57,8 @@ class TeamServiceImpl(
         val evaluations = teamRateRepository.findEvaluationsByTeam(teamEntity)
             .map{it.evaluation ?: ""}
 
-        val maleCount = teamRepository.countMaleByMemberId(teamId)
-        val femaleCount = teamRepository.countFemaleByMemberId(teamId)
+        val maleCount = teamRepository.countMaleByMemberId(teamId) ?: 0L
+        val femaleCount = teamRepository.countFemaleByMemberId(teamId) ?: 0L
 
         return TeamInfoResponse(
             teamEntity,
