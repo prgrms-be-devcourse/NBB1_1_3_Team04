@@ -79,7 +79,7 @@ class TeamMemberServiceImpl(
         //현재 유저 정보
         val creator: TeamMember = findByTeamIdAndMemberIdOrThrowException(teamId, memberId)
 
-        require(creator.role === TeamMemberRole.CREATOR) { "삭제 권한이 없습니다" }
+        require(creator.role == TeamMemberRole.CREATOR) { "삭제 권한이 없습니다" }
 
         teamMemberRepository.delete(teamMember)
         //팀 멤버 삭제시 해당 멤버 채팅방 퇴장 이벤트 처리

@@ -120,7 +120,7 @@ class TeamServiceImpl(
 
     fun checkAuthority(teamId: Long, teamMember: TeamMember) {
         require(
-            !(teamMember.team.teamId !== teamId || teamMember.role !== TeamMemberRole.CREATOR)
+            !(teamMember.team.teamId != teamId || teamMember.role != TeamMemberRole.CREATOR)
         ) { "접근 권한이 없습니다." }
     }
 }
