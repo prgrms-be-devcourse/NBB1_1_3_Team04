@@ -144,20 +144,17 @@ class VoteServiceImpl(
         validateTeamByTeamId(teamId)
         val votes: List<Vote> = voteRepository.findAllByTeamId(teamId)
         return votes.map(AllVoteResponse::from)
-            .toList()
     }
 
     private fun createVoteItemDate(request: VoteDateCreateServiceRequest, savedVote: Vote): List<VoteItemDate> {
-        return voteItemRepository.saveAll(request.choices.stream()
-            .map { choice -> VoteItemDate.create(savedVote, choice) }
-            .toList())
+        return voteItemRepository.saveAll(request.choices
+            .map { choice -> VoteItemDate.create(savedVote, choice) })
     }
 
     private fun createVoteItemLocate(request: VoteCourtCreateServiceRequest, savedVote: Vote): List<VoteItemLocate> {
         checkDuplicateStadiumIds(request.courtIds)
-        return request.courtIds.stream()
+        return request.courtIds
             .map { stadiumId -> VoteItemLocate.create(savedVote, stadiumId) }
-            .toList()
     }
 
     private fun checkDuplicateStadiumIds(requestStadiumIds: List<Long>) {
@@ -165,9 +162,8 @@ class VoteServiceImpl(
     }
 
     private fun createChoice(request: ChoiceCreateServiceRequest, memberId: Long): List<Choice> {
-        return request.voteItemIds.stream()
+        return request.voteItemIds
             .map { voteItemId -> Choice.create(memberId, voteItemId) }
-            .toList()
     }
 
     private fun getVoteByVoteId(voteId: Long): Vote {
@@ -181,7 +177,6 @@ class VoteServiceImpl(
 
     private fun <T : VoteItem?> convertVoteItemsToResponseFrom(voteItems: List<T>): List<VoteItemResponse> {
         return voteItems.map { voteItem: T -> this.convertVoteItemToResponse(voteItem) }
-            .toList()
     }
 
     private fun <T : VoteItem?> convertVoteItemToResponse(voteItem: T): VoteItemResponse {
