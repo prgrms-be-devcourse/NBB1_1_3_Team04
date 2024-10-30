@@ -8,6 +8,7 @@ import com.grepp.nbe1_3_team04.chat.repository.RedisChatroomRepository
 import com.grepp.nbe1_3_team04.chat.service.request.ChatroomServiceRequest
 import com.grepp.nbe1_3_team04.chat.service.response.ChatroomResponse
 import com.grepp.nbe1_3_team04.global.exception.ExceptionMessage
+import com.grepp.nbe1_3_team04.member.domain.Member
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -92,6 +93,15 @@ class ChatroomServiceImpl(
         chatroom.updateName(request.name)
 
         return ChatroomResponse(chatroom)
+    }
+
+    /**
+     * 내가 참여한 채팅방 조회
+     */
+    @Transactional(readOnly = true)
+    override fun getMyChatroom(member: Member): List<ChatroomResponse> {
+        return chatroomRepository.findChatroomByMember(member)
+            .map(::ChatroomResponse)
     }
 
     private fun deleteChatroom(chatroom: Chatroom): Long {
