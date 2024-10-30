@@ -4,7 +4,7 @@ import com.grepp.nbe1_3_team04.global.repository.CustomGlobalRepository
 import com.grepp.nbe1_3_team04.reservation.domain.Reservation
 import com.grepp.nbe1_3_team04.reservation.domain.ReservationStatus
 import com.grepp.nbe1_3_team04.stadium.domain.Court
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 
 @Repository
-interface ReservationRepository : JpaRepository<Reservation, Long>, CustomGlobalRepository<Any> {
+interface ReservationRepository : JpaRepository<Reservation, Long>, CustomGlobalRepository<Reservation> {
     @Query("SELECT r FROM Reservation r WHERE r.isDeleted = 'false' AND r.reservationId = :id")
     override fun findActiveById(@Param("id") id: Long): Reservation?
 
@@ -24,7 +24,7 @@ interface ReservationRepository : JpaRepository<Reservation, Long>, CustomGlobal
         @Param("matchDate") matchDate: LocalDateTime,
         @Param("court") court: Court,
         @Param("reservationStatus") reservationStatus: ReservationStatus,
-        pageRequest: PageRequest
+        pageable: Pageable
     ): Slice<Reservation>
 
     @Query("select r from Reservation r where r.isDeleted = 'false' and r.reservationId = :id")
