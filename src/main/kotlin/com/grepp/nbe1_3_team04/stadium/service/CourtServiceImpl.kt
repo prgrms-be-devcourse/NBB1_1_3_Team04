@@ -31,6 +31,7 @@ class CourtServiceImpl(
 
     companion object {
         private val log = LoggerFactory.getLogger(CourtServiceImpl::class.java)
+        private const val PAGE_SIZE = 10
     }
 
     override fun getCourtsByStadiumId(stadiumId: Long, page: Int, sort: String): Slice<CourtsResponse> {
@@ -40,13 +41,13 @@ class CourtServiceImpl(
             exceptionMessage = ExceptionMessage.STADIUM_NOT_FOUND
         )
 
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)))
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
         val courts: Slice<Court> = courtRepository.findByStadium_StadiumId(stadiumId, pageable)
         return courts.map(CourtsResponse::from)
     }
 
     override fun getAllCourts(page: Int, sort: String): Slice<CourtsResponse> {
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)))
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
         val courts: Slice<Court> = courtRepository.findAllActive(pageable)
         return courts.map(CourtsResponse::from)
     }

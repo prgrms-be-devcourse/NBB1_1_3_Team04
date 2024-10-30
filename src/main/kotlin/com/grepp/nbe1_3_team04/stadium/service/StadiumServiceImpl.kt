@@ -31,10 +31,11 @@ class StadiumServiceImpl(
 
     companion object {
         private val log = LoggerFactory.getLogger(StadiumServiceImpl::class.java)
+        private const val PAGE_SIZE = 10
     }
 
     override fun getStadiumList(page: Int, sort: String): Slice<StadiumsResponse> {
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)))
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
         return stadiumRepository.findAllActiveStadiums(pageable).map(StadiumsResponse::from)
     }
 
@@ -48,12 +49,12 @@ class StadiumServiceImpl(
     }
 
     override fun getStadiumsByName(query: String, page: Int, sort: String): Slice<StadiumsResponse> {
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)))
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
         return stadiumRepository.findByNameContainingIgnoreCase(query, pageable).map(StadiumsResponse::from)
     }
 
     override fun getStadiumsByAddress(address: String, page: Int, sort: String): Slice<StadiumsResponse> {
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)))
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
         return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from)
     }
 
@@ -62,7 +63,7 @@ class StadiumServiceImpl(
         page: Int,
         sort: String
     ): Slice<StadiumsResponse> {
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)))
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
         return stadiumRepository.findStadiumsByLocation(
             latitude = request.latitude,
             longitude = request.longitude,
