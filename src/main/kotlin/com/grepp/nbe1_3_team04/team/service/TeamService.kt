@@ -4,9 +4,7 @@ import com.grepp.nbe1_3_team04.member.domain.Member
 import com.grepp.nbe1_3_team04.team.service.request.TeamDefaultServiceRequest
 import com.grepp.nbe1_3_team04.team.service.response.TeamDefaultResponse
 import com.grepp.nbe1_3_team04.team.service.response.TeamInfoResponse
-import org.springframework.stereotype.Component
 
-@Component
 interface TeamService {
     /**
      * 팀 생성
