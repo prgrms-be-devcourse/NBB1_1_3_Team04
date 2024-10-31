@@ -23,7 +23,7 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         filterChain: FilterChain
     ) {
         val accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN)
-        val refreshToken = jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
+        val refreshToken = getRefreshTokenByRequest(request) ?: jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
 
         processSecurity(accessToken, refreshToken)
         filterChain.doFilter(request, response)
@@ -34,7 +34,7 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         accessToken?.let{
             jwtTokenUtil.tokenValidation(it)
             val email = jwtTokenUtil.getEmailFromToken(it)
-            val isLogout = redisTemplate.opsForValue().get(it) as String?
+            val isLogout = redisTemplate.opsForValue()[it] as String?
 
             if(ObjectUtils.isEmpty(isLogout)){
                 setAuthentication(email)
@@ -42,7 +42,9 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         }
 
         if (accessToken == null && refreshToken != null) {
-            jwtTokenUtil.refreshTokenValidation(refreshToken)
+            if(!jwtTokenUtil.refreshTokenValidation(refreshToken)){
+                return
+            }
             setAuthentication(jwtTokenUtil.getEmailFromToken(refreshToken))
         }
     }

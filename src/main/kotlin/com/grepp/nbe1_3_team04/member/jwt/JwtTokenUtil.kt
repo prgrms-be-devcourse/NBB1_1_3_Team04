@@ -139,12 +139,13 @@ class JwtTokenUtil(private val userDetailService: PrincipalDetailsService, priva
         }
     }
 
-    fun refreshTokenValidation(refreshToken: String?) {
+    fun refreshTokenValidation(refreshToken: String?): Boolean {
         tokenValidation(refreshToken)
         val email = getEmailFromToken(refreshToken)
         val redisRefresh = redisTemplate.opsForValue()[email]
 
-        redisRefresh?.toString() ?: throw JwtException("유효하지 않은 Jwt 토큰입니다.")
+        redisRefresh?.toString() ?: return false
+        return true
     }
 
     companion object {
