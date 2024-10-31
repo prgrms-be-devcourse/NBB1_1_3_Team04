@@ -10,6 +10,9 @@ import org.locationtech.jts.geom.Point
 
 @SQLDelete(sql = "UPDATE stadium SET is_deleted = 'TRUE' WHERE stadium_id = ?")
 @Entity
+@Table(
+    indexes = [Index(name = "idx_location", columnList = "location", unique = false)]
+)
 class Stadium private constructor(
     member: Member,
     name: String,
