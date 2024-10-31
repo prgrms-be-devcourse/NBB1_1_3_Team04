@@ -17,4 +17,6 @@ interface TeamMemberRepository : JpaRepository<TeamMember, Long>, CustomTeamMemb
 
     @Query("SELECT tm FROM TeamMember tm JOIN FETCH tm.member WHERE tm.isDeleted = 'false' and tm.teamMemberId = :teamMemberId")
     fun findTeamMemberWithMemberById(@Param("teamMemberId") teamMemberId: Long): TeamMember?
+
+    fun deleteByTeam(@Param("team") team: Team)
 }

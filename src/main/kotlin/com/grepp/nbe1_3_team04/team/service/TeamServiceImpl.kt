@@ -105,6 +105,9 @@ class TeamServiceImpl(
         //권한 정보
         checkAuthority(teamId, teamMember)
 
+        //해당 팀 멤버들 삭제
+        teamMemberRepository.deleteByTeam(teamEntity)
+        //해당 팀 삭제
         teamRepository.delete(teamEntity)
         // 채팅방 삭제 이벤트 실행
         publisher.publishEvent(TeamDeletedEvent(teamId))
