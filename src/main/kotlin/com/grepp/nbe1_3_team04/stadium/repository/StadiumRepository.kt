@@ -30,4 +30,42 @@ interface StadiumRepository : JpaRepository<Stadium, Long>, CustomStadiumReposit
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND LOWER(s.address) LIKE LOWER(CONCAT('%', :address, '%'))")
     fun findByAddressContainingIgnoreCase(@Param("address") address: String, pageable: Pageable): Slice<Stadium>
+
+    @Query(
+        value = """
+            SELECT s.*
+            FROM stadium s
+            WHERE s.is_deleted = 'false'
+              AND ST_Contains(
+                    ST_Buffer(
+                        ST_GeomFromText(CONCAT('POINT(', :longitude, ' ', :latitude, ')'), 4326),
+                        :distanceInDegrees
+                    ),
+                    s.location
+                )
+            ORDER BY ST_Distance_Sphere(
+                    s.location,
+                    ST_GeomFromText(CONCAT('POINT(', :longitude, ' ', :latitude, ')'), 4326)
+                ) ASC
+        """,
+        countQuery = """
+            SELECT COUNT(*)
+            FROM stadium s
+            WHERE s.is_deleted = 'false'
+              AND ST_Contains(
+                    ST_Buffer(
+                        ST_GeomFromText(CONCAT('POINT(', :longitude, ' ', :latitude, ')'), 4326),
+                        :distanceInDegrees
+                    ),
+                    s.location
+                )
+        """,
+        nativeQuery = true
+    )
+    fun findStadiumsWithinDistanceUsingBuffer(
+        @Param("latitude") latitude: Double,
+        @Param("longitude") longitude: Double,
+        @Param("distanceInDegrees") distanceInDegrees: Double,
+        pageable: Pageable
+    ): Slice<Stadium>
 }
