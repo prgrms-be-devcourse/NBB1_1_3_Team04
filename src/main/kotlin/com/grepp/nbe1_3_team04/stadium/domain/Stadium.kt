@@ -94,4 +94,12 @@ class Stadium private constructor(
             return Stadium(member, name, address, phoneNumber, description, location)
         }
     }
+
+    @PrePersist
+    @PreUpdate
+    fun ensureSrid() {
+        if (location.srid != 4326) {
+            location.srid = 4326
+        }
+    }
 }

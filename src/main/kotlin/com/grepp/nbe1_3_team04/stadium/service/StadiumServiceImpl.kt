@@ -33,7 +33,6 @@ class StadiumServiceImpl(
     companion object {
         private val log = LoggerFactory.getLogger(StadiumServiceImpl::class.java)
         private const val PAGE_SIZE = 10
-        const val KM_TO_DEGREES = 1 / 111.32
     }
 
     override fun getStadiumList(page: Int, sort: String): Slice<StadiumsResponse> {
@@ -69,12 +68,10 @@ class StadiumServiceImpl(
         val sortField = SortFieldMapper.getDatabaseField(sort)
         val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sortField))
 
-        val distanceInDegrees = request.distance * KM_TO_DEGREES
-
         val stadiumSlice: Slice<Stadium> = stadiumRepository.findStadiumsWithinDistanceUsingBuffer(
-            latitude = request.latitude,
-            longitude = request.longitude,
-            distanceInDegrees = distanceInDegrees,
+            latitude = request.longitude,
+            longitude = request.latitude,
+            distance = request.distance,
             pageable = pageable
         )
 
