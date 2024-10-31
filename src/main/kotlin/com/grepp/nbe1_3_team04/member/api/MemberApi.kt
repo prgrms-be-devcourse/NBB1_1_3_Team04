@@ -24,12 +24,12 @@ class MemberApi( private val memberService: MemberService,
     ) {
 
     @PostMapping("/join")
-    fun join(@RequestBody request: @Valid JoinRequest): ApiResponse<MemberResponse> {
+    fun join(@RequestBody @Valid request:  JoinRequest): ApiResponse<MemberResponse> {
         return ApiResponse.created(memberService.join(request.toServiceRequest()))
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody request: @Valid LoginRequest, response: HttpServletResponse): ApiResponse<TokenResponse> {
+    fun login(@RequestBody @Valid request:  LoginRequest, response: HttpServletResponse): ApiResponse<TokenResponse> {
         val tokenResponse: TokenResponse = memberService.login(request.toServiceRequest())
         cookieService.setHeader(response, tokenResponse.refreshToken) // 쿠키에 refreshToken 저장
 
@@ -55,7 +55,7 @@ class MemberApi( private val memberService: MemberService,
     @PutMapping("/update")
     fun update(
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
-        @RequestBody request: @Valid UpdateRequest
+        @RequestBody @Valid request: UpdateRequest
     ): ApiResponse<MemberResponse> {
         return ApiResponse.ok(memberService.update(principalDetails.member, request.toServiceRequest()))
     }
@@ -63,7 +63,7 @@ class MemberApi( private val memberService: MemberService,
     @PutMapping("/update-password")
     fun updatePassword(
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
-        @RequestBody request: @Valid UpdatePasswordRequest
+        @RequestBody @Valid request: UpdatePasswordRequest
     ): ApiResponse<MemberResponse> {
         return ApiResponse.ok(memberService.updatePassword(principalDetails.member, request.toServiceRequest()))
     }
