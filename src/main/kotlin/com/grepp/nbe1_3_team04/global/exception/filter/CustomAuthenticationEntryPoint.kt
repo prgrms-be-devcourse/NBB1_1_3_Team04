@@ -23,7 +23,7 @@ class CustomAuthenticationEntryPoint : AuthenticationEntryPoint {
         response.contentType = "application/json"
         val apiResponse: ApiResponse<Any?> = ApiResponse.of(
             HttpStatus.UNAUTHORIZED,
-            "인증 정보가 없습니다.",
+            "요청 혹은 인증 정보에 오류가 있습니다.",
             null
         )
 
