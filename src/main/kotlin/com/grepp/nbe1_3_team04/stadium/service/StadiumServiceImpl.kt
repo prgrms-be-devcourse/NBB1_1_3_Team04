@@ -33,6 +33,7 @@ class StadiumServiceImpl(
     companion object {
         private val log = LoggerFactory.getLogger(StadiumServiceImpl::class.java)
         private const val PAGE_SIZE = 10
+        const val KM_TO_DEGREES = 1 / 111.32
     }
 
     override fun getStadiumList(page: Int, sort: String): Slice<StadiumsResponse> {
@@ -59,18 +60,25 @@ class StadiumServiceImpl(
         return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from)
     }
 
+    @Transactional
     override fun getStadiumsWithinDistance(
         request: StadiumSearchByLocationServiceRequest,
         page: Int,
         sort: String
     ): Slice<StadiumsResponse> {
-        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
-        return stadiumRepository.findStadiumsByLocation(
+        val sortField = SortFieldMapper.getDatabaseField(sort)
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sortField))
+
+        val distanceInDegrees = request.distance * KM_TO_DEGREES
+
+        val stadiumSlice: Slice<Stadium> = stadiumRepository.findStadiumsWithinDistanceUsingBuffer(
             latitude = request.latitude,
             longitude = request.longitude,
-            distance = request.distance,
+            distanceInDegrees = distanceInDegrees,
             pageable = pageable
-        ).map(StadiumsResponse::from)
+        )
+
+        return stadiumSlice.map { StadiumsResponse.from(it) }
     }
 
     @Transactional
