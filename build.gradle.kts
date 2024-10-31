@@ -60,6 +60,10 @@ dependencies {
     kapt("jakarta.persistence:jakarta.persistence-api")
 
     // JTS
+    implementation("org.locationtech.jts:jts-core:1.19.0")
+
+    // Hibernate Spatial
+    implementation("org.hibernate.orm:hibernate-spatial:6.5.3.Final")
 
     // Websocket
     implementation("org.springframework.boot:spring-boot-starter-websocket")
