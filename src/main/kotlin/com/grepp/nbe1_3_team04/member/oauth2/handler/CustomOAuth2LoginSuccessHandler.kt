@@ -1,4 +1,4 @@
-package com.grepp.nbe1_3_team04.member.oauth2
+package com.grepp.nbe1_3_team04.member.oauth2.handler
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
@@ -6,6 +6,7 @@ import com.grepp.nbe1_3_team04.member.domain.Member
 import com.grepp.nbe1_3_team04.member.domain.MemberRole
 import com.grepp.nbe1_3_team04.member.jwt.JwtTokenUtil
 import com.grepp.nbe1_3_team04.member.jwt.response.TokenResponse
+import com.grepp.nbe1_3_team04.member.oauth2.CustomOAuth2UserDetails
 import com.grepp.nbe1_3_team04.member.oauth2.response.MemberOAuthResponse
 import com.grepp.nbe1_3_team04.member.service.CookieService
 import jakarta.servlet.ServletException
