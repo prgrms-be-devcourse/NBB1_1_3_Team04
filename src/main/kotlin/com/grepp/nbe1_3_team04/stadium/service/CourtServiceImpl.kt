@@ -66,6 +66,7 @@ class CourtServiceImpl(
         val memberId: Long = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
         val stadium = validateStadiumOwnership(request.stadiumId, memberId)
+        stadium.createCourt(memberId)
 
         val court = Court.create(
             stadium = stadium,

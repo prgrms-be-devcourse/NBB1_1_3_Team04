@@ -13,6 +13,7 @@ import com.grepp.nbe1_3_team04.stadium.service.request.StadiumSearchByLocationSe
 import com.grepp.nbe1_3_team04.stadium.service.request.StadiumUpdateServiceRequest
 import com.grepp.nbe1_3_team04.stadium.service.response.StadiumDetailResponse
 import com.grepp.nbe1_3_team04.stadium.service.response.StadiumsResponse
+import com.grepp.nbe1_3_team04.stadium.util.PositionUtil
 import com.grepp.nbe1_3_team04.stadium.util.SortFieldMapper
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
@@ -58,32 +59,40 @@ class StadiumServiceImpl(
         return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from)
     }
 
+    @Transactional(readOnly = true)
     override fun getStadiumsWithinDistance(
         request: StadiumSearchByLocationServiceRequest,
         page: Int,
         sort: String
     ): Slice<StadiumsResponse> {
-        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(SortFieldMapper.getDatabaseField(sort)))
-        return stadiumRepository.findStadiumsByLocation(
-            latitude = request.latitude,
-            longitude = request.longitude,
+        val sortField = SortFieldMapper.getDatabaseField(sort)
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(sortField))
+
+        val stadiumSlice: Slice<Stadium> = stadiumRepository.findStadiumsWithinDistanceUsingBuffer(
+            latitude = request.longitude,
+            longitude = request.latitude,
             distance = request.distance,
             pageable = pageable
-        ).map(StadiumsResponse::from)
+        )
+
+        return stadiumSlice.map { StadiumsResponse.from(it) }
     }
 
     @Transactional
     override fun registerStadium(request: StadiumRegisterServiceRequest, member: Member): StadiumDetailResponse {
+        val point = PositionUtil.createPoint(request.latitude, request.longitude)
+
         val stadium = Stadium.create(
             member = member,
             name = request.name,
             address = request.address,
             phoneNumber = request.phoneNumber,
             description = request.description,
-            latitude = request.latitude,
-            longitude = request.longitude
+            location = point
         )
+
         stadiumRepository.save(stadium)
+
         return StadiumDetailResponse.from(stadium)
     }
 
@@ -97,14 +106,15 @@ class StadiumServiceImpl(
 
         val stadium = validateStadiumOwnership(memberId, stadiumId)
 
+        val point = PositionUtil.createPoint(request.latitude, request.longitude)
+
         stadium.updateStadium(
             memberId = memberId,
             name = request.name,
             address = request.address,
             phoneNumber = request.phoneNumber,
             description = request.description,
-            latitude = request.latitude,
-            longitude = request.longitude
+            location = point
         )
 
         return StadiumDetailResponse.from(stadium)

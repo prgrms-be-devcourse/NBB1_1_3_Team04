@@ -14,6 +14,7 @@ data class StadiumDetailResponse(
 ) {
     companion object {
         fun from(stadium: Stadium): StadiumDetailResponse {
+            val coordinate = stadium.location.coordinate
             return StadiumDetailResponse(
                 stadiumId = requireNotNull(stadium.stadiumId),
                 memberId = requireNotNull(stadium.member.memberId),
@@ -21,8 +22,8 @@ data class StadiumDetailResponse(
                 address = stadium.address,
                 phoneNumber = stadium.phoneNumber,
                 description = stadium.description,
-                latitude = stadium.position.latitude,
-                longitude = stadium.position.longitude
+                latitude = coordinate.y,
+                longitude = coordinate.x
             )
         }
     }

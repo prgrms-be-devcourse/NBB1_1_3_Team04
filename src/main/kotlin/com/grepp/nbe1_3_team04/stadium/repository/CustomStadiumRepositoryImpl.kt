@@ -1,62 +1,42 @@
 package com.grepp.nbe1_3_team04.stadium.repository
 
-import com.grepp.nbe1_3_team04.global.domain.IsDeleted
-import com.grepp.nbe1_3_team04.stadium.domain.QStadium.stadium
 import com.grepp.nbe1_3_team04.stadium.domain.Stadium
-import com.querydsl.core.types.dsl.Expressions
-import com.querydsl.core.types.dsl.NumberTemplate
-import com.querydsl.jpa.impl.JPAQueryFactory
+import jakarta.persistence.EntityManager
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
-import org.springframework.data.domain.SliceImpl
+import org.springframework.stereotype.Repository
 
+@Repository
 class CustomStadiumRepositoryImpl(
-    private val queryFactory: JPAQueryFactory
+    @Autowired private val entityManager: EntityManager
 ) : CustomStadiumRepository {
-
-    override fun findStadiumsByLocation(
+    override fun findStadiumsWithinDistanceUsingBuffer(
         latitude: Double,
         longitude: Double,
         distance: Double,
         pageable: Pageable
     ): Slice<Stadium> {
-        val haversineDistance = calculateHaversineDistance(latitude, longitude)
+        val query = """
+            SELECT s 
+            FROM Stadium s 
+            WHERE s.isDeleted = 'false' AND ST_Contains(
+                ST_Buffer(ST_GeomFromText(:point, 4326), :distance), 
+                s.location
+            ) = true
+            ORDER BY ${pageable.sort.joinToString(", ") { it.property + " " + it.direction.name }}
+        """
 
-        val stadiums = fetchStadiumsByLocation(haversineDistance, distance, pageable)
+        val pointWKT = "POINT($longitude $latitude)"
 
-        return createSlice(stadiums, pageable)
-    }
+        val typedQuery = entityManager.createQuery(query, Stadium::class.java)
+            .setParameter("point", pointWKT)
+            .setParameter("distance", distance)
+            .setFirstResult(pageable.offset.toInt())
+            .setMaxResults(pageable.pageSize)
 
-    private fun calculateHaversineDistance(
-        latitude: Double,
-        longitude: Double
-    ): NumberTemplate<Double> {
-        return Expressions.numberTemplate(
-            Double::class.javaObjectType,
-            "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
-            latitude, stadium.position.latitude, stadium.position.longitude, longitude
-        )
-    }
-
-    private fun fetchStadiumsByLocation(
-        haversineDistance: NumberTemplate<Double>,
-        distance: Double,
-        pageable: Pageable
-    ): List<Stadium> {
-        return queryFactory
-            .selectFrom(stadium)
-            .where(
-                haversineDistance.loe(distance)
-                    .and(stadium.isDeleted.eq(IsDeleted.FALSE))
-            )
-            .offset(pageable.offset)
-            .limit(pageable.pageSize + 1L)
-            .fetch()
-    }
-
-    private fun createSlice(stadiums: List<Stadium>, pageable: Pageable): Slice<Stadium> {
-        val hasNext = stadiums.size > pageable.pageSize
-        val content = if (hasNext) stadiums.subList(0, pageable.pageSize) else stadiums
-        return SliceImpl(content, pageable, hasNext)
+        val results = typedQuery.resultList
+        return PageImpl(results, pageable, results.size.toLong())
     }
 }

@@ -6,16 +6,20 @@ import com.grepp.nbe1_3_team04.member.domain.Member
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 import org.hibernate.annotations.SQLDelete
+import org.locationtech.jts.geom.Point
 
 @SQLDelete(sql = "UPDATE stadium SET is_deleted = 'TRUE' WHERE stadium_id = ?")
 @Entity
+@Table(
+    indexes = [Index(name = "idx_location", columnList = "location", unique = false)]
+)
 class Stadium private constructor(
     member: Member,
     name: String,
     address: String,
     phoneNumber: String,
     description: String?,
-    position: Position
+    location: Point
 ) : BaseEntity() {
 
     @Id
@@ -28,17 +32,14 @@ class Stadium private constructor(
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var name: String = name
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var address: String = address
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var phoneNumber: String = phoneNumber
         protected set
 
@@ -46,8 +47,8 @@ class Stadium private constructor(
     var description: String? = description
         protected set
 
-    @Embedded
-    var position: Position = position
+    @Column(nullable = false, columnDefinition = "POINT")
+    var location: Point = location
         protected set
 
     fun updateStadium(
@@ -56,15 +57,14 @@ class Stadium private constructor(
         address: String,
         phoneNumber: String,
         description: String?,
-        latitude: Double,
-        longitude: Double
+        location: Point
     ) {
         checkMember(memberId)
         this.name = name
         this.address = address
         this.phoneNumber = phoneNumber
         this.description = description
-        this.position.updatePosition(latitude, longitude)
+        this.location = location
     }
 
     fun deleteStadium(memberId: Long) {
@@ -88,11 +88,17 @@ class Stadium private constructor(
             address: String,
             phoneNumber: String,
             description: String?,
-            latitude: Double,
-            longitude: Double
+            location: Point
         ): Stadium {
-            val position = Position.of(latitude, longitude)
-            return Stadium(member, name, address, phoneNumber, description, position)
+            return Stadium(member, name, address, phoneNumber, description, location)
+        }
+    }
+
+    @PrePersist
+    @PreUpdate
+    fun ensureSrid() {
+        if (location.srid != 4326) {
+            location.srid = 4326
         }
     }
 }

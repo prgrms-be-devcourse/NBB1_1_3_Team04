@@ -25,7 +25,6 @@ class Court private constructor(
     val stadium: Stadium = stadium
 
     @field:NotNull
-    @Column(nullable = false)
     var name: String = name
         protected set
 
@@ -34,7 +33,6 @@ class Court private constructor(
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var pricePerHour: BigDecimal = pricePerHour
         protected set
 
