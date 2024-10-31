@@ -21,7 +21,7 @@ class CustomStadiumRepositoryImpl(
         val query = """
             SELECT s 
             FROM Stadium s 
-            WHERE ST_Contains(
+            WHERE s.isDeleted = 'false' AND ST_Contains(
                 ST_Buffer(ST_GeomFromText(:point, 4326), :distance), 
                 s.location
             ) = true
