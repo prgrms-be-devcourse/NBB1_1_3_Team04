@@ -1,9 +1,13 @@
 package com.grepp.nbe1_3_team04.team.service
 
 import com.grepp.nbe1_3_team04.chat.service.event.TeamDeletedEvent
+import com.grepp.nbe1_3_team04.chat.service.event.TeamMemberJoinEvent
 import com.grepp.nbe1_3_team04.chat.service.event.TeamPublishedEvent
 import com.grepp.nbe1_3_team04.member.domain.Member
-import com.grepp.nbe1_3_team04.team.domain.*
+import com.grepp.nbe1_3_team04.team.domain.Team
+import com.grepp.nbe1_3_team04.team.domain.TeamMember
+import com.grepp.nbe1_3_team04.team.domain.TeamMemberRole
+import com.grepp.nbe1_3_team04.team.domain.TotalRecord
 import com.grepp.nbe1_3_team04.team.repository.TeamMemberRepository
 import com.grepp.nbe1_3_team04.team.repository.TeamRateRepository
 import com.grepp.nbe1_3_team04.team.repository.TeamRepository
@@ -42,6 +46,8 @@ class TeamServiceImpl(
         publisher.publishEvent(TeamPublishedEvent(createdTeam.name, createdTeam.teamId!!))
 
         teamMemberRepository.save(TeamMember.createCreator(createdTeam, member))
+        // 팀장 채팅에 추가
+        publisher.publishEvent(TeamMemberJoinEvent(member, createdTeam.teamId!!))
 
         return TeamDefaultResponse(createdTeam)
     }
@@ -81,8 +87,8 @@ class TeamServiceImpl(
 
         //entity에 수정된 값 적용
         dto.name?.let{teamEntity.updateName(it)}
-        dto.description?.let{teamEntity.updateName(it)}
-        dto.location?.let{teamEntity.updateName(it)}
+        dto.description?.let{teamEntity.updateDescription(it)}
+        dto.location?.let{teamEntity.updateLocation(it)}
 
         //바뀐 Team값 반환
         return TeamDefaultResponse(teamEntity)
