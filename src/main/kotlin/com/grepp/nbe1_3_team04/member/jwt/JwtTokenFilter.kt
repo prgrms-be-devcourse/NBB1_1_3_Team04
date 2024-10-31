@@ -16,12 +16,24 @@ import java.util.*
 @Component
 class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTemplate: RedisTemplate<String, *>) : OncePerRequestFilter() {
 
+    private val EXCLUDED_URLS = listOf(
+        "/api/v1/members/join",
+        "/api/v1/members/login",
+        "/api/v1/court/",
+        "/api/v1/stadium/",
+        "/api/v1/merchant/",
+    )
+
     @Throws(ServletException::class, IOException::class)
     protected override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        if (isExcludedUrl(request.requestURI)) {
+            filterChain.doFilter(request, response)
+        }
+
         val accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN)
         val refreshToken = getRefreshTokenByRequest(request) ?: jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
 
@@ -71,4 +83,9 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
             return null
         }
     }
+
+    private fun isExcludedUrl(requestURI: String): Boolean {
+        return EXCLUDED_URLS.any { requestURI.startsWith(it) }
+    }
+
 }
