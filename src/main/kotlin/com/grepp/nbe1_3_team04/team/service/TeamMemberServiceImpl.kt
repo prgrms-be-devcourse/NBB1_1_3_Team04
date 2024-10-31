@@ -76,9 +76,9 @@ class TeamMemberServiceImpl(
             IllegalArgumentException("존재하지 않는 회원입니다.")
         //삭제할 팀 멤버 찾기
         val teamMember: TeamMember = findTeamMemberByIdOrThrowException(teamMemberId)
+
         //현재 유저 정보
         val creator: TeamMember = findByTeamIdAndMemberIdOrThrowException(teamId, memberId)
-
         require(creator.role == TeamMemberRole.CREATOR) { "삭제 권한이 없습니다" }
 
         teamMemberRepository.delete(teamMember)
@@ -92,10 +92,13 @@ class TeamMemberServiceImpl(
     override fun deleteTeamMember(teamId: Long, member: Member): Long {
         val memberId : Long = member.memberId ?: throw
                 IllegalArgumentException("존재하지 않는 회원입니다.")
+
         val teamMember: TeamMember = findByTeamIdAndMemberIdOrThrowException(teamId, memberId)
+
         teamMemberRepository.delete(teamMember)
+
         //팀 멤버 삭제시 해당 멤버 채팅방 퇴장 이벤트 처리
-        publisher.publishEvent(TeamMemberLeaveEvent(teamMember.member, teamMember.team.teamId!!))
+        publisher.publishEvent(TeamMemberLeaveEvent(member, teamMember.team.teamId!!))
         return teamMember.teamMemberId!!
     }
 
@@ -108,7 +111,7 @@ class TeamMemberServiceImpl(
     }
 
     fun findTeamMemberByIdOrThrowException(id: Long): TeamMember {
-        val teamMember: TeamMember = teamMemberRepository.findByTeamMemberId(id)?: throw
+        val teamMember: TeamMember = teamMemberRepository.findTeamMemberWithMemberById(id)?: throw
                 IllegalArgumentException("존재하지 않는 팀원입니다.")
         return teamMember
     }
