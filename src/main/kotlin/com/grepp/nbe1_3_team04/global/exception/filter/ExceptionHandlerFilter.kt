@@ -2,10 +2,7 @@ package com.grepp.nbe1_3_team04.global.exception.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
-import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.UnsupportedJwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest

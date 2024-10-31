@@ -16,7 +16,7 @@ import java.util.*
 @Component
 class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTemplate: RedisTemplate<String, *>) : OncePerRequestFilter() {
 
-    private val EXCLUDED_URLS = listOf(
+    private final val excludedUrls = listOf(
         "/api/v1/members/join",
         "/api/v1/members/login",
         "/api/v1/court/",
@@ -24,8 +24,9 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         "/api/v1/merchant/",
     )
 
+
     @Throws(ServletException::class, IOException::class)
-    protected override fun doFilterInternal(
+    override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
@@ -34,8 +35,8 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
             filterChain.doFilter(request, response)
         }
 
-        val accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN)
-        val refreshToken = getRefreshTokenByRequest(request) ?: jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
+        val accessToken = jwtTokenUtil.getHeaderToken(request, JwtTokenUtil.ACCESS_TOKEN)
+        val refreshToken = getRefreshTokenByRequest(request) ?: jwtTokenUtil.getHeaderToken(request, JwtTokenUtil.REFRESH_TOKEN)
 
         processSecurity(accessToken, refreshToken)
         filterChain.doFilter(request, response)
@@ -68,15 +69,12 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
 
 
     companion object {
-        const val ACCESS_TOKEN: String = "Authorization"
-        const val REFRESH_TOKEN: String = "refresh_token"
-        private const val COOKIE_REFRESH_TOKEN = "refreshToken"
         fun getRefreshTokenByRequest(request: HttpServletRequest): String? {
             val cookies: Array<Cookie>? = request.cookies
 
             if (!cookies.isNullOrEmpty()) {
                 return Arrays.stream(cookies)
-                    .filter { c: Cookie -> c.name == COOKIE_REFRESH_TOKEN }.findFirst().map { obj: Cookie -> obj.value }
+                    .filter { c: Cookie -> c.name == JwtTokenUtil.COOKIE_REFRESH_TOKEN }.findFirst().map { obj: Cookie -> obj.value }
                     .orElse(null)
             }
 
@@ -85,7 +83,7 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
     }
 
     private fun isExcludedUrl(requestURI: String): Boolean {
-        return EXCLUDED_URLS.any { requestURI.startsWith(it) }
+        return excludedUrls.any { requestURI.startsWith(it) }
     }
 
 }
