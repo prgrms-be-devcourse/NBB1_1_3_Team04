@@ -59,7 +59,7 @@ class StadiumServiceImpl(
         return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     override fun getStadiumsWithinDistance(
         request: StadiumSearchByLocationServiceRequest,
         page: Int,

@@ -2,7 +2,7 @@ package com.grepp.nbe1_3_team04.stadium.repository
 
 import com.grepp.nbe1_3_team04.stadium.domain.Stadium
 import jakarta.persistence.EntityManager
-import jakarta.persistence.PersistenceContext
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class CustomStadiumRepositoryImpl(
-    @PersistenceContext private val entityManager: EntityManager
+    @Autowired private val entityManager: EntityManager
 ) : CustomStadiumRepository {
     override fun findStadiumsWithinDistanceUsingBuffer(
         latitude: Double,

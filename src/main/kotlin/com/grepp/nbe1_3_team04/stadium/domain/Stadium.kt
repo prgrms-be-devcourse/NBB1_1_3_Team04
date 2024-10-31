@@ -32,17 +32,14 @@ class Stadium private constructor(
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var name: String = name
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var address: String = address
         protected set
 
     @field:NotNull
-    @Column(nullable = false)
     var phoneNumber: String = phoneNumber
         protected set
 
@@ -50,7 +47,6 @@ class Stadium private constructor(
     var description: String? = description
         protected set
 
-    @field:NotNull
     @Column(nullable = false, columnDefinition = "POINT")
     var location: Point = location
         protected set
