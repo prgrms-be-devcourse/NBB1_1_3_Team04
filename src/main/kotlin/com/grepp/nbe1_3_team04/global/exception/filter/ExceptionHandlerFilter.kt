@@ -2,7 +2,10 @@ package com.grepp.nbe1_3_team04.global.exception.filter
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.UnsupportedJwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
@@ -27,15 +30,18 @@ class ExceptionHandlerFilter : OncePerRequestFilter() {
     ) {
         try {
             filterChain.doFilter(request, response)
-        } catch (e: JwtException) {
-            log.error(e.message)
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e)
-        }  catch (e: IllegalArgumentException){
-            log.error(e.message)
-            setErrorResponse(HttpStatus.BAD_REQUEST, response, e)
-        } catch (e: Exception){
-            log.error(e.message)
-            setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, response, e)
+        } catch (e: Exception) {
+            when (e) {
+                is JwtException -> {
+                    log.error(e.message)
+                    setErrorResponse(HttpStatus.UNAUTHORIZED, response, e)
+                }
+
+                else -> {
+                    log.error(e.message)
+                    setErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, response, e)
+                }
+            }
         }
     }
 
