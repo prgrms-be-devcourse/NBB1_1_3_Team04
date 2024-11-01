@@ -14,6 +14,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import team4.footwithme.member.jwt.PrincipalDetails
+import java.time.LocalDateTime
 
 
 @RestController
@@ -41,12 +42,12 @@ class ChatApi(
     @GetMapping("/{chatroomId}")
     fun getChatting(
         @PathVariable chatroomId: Long,
-        @RequestParam page: Int,
+        @RequestParam cursor: LocalDateTime?,
         @RequestParam size: Int,
         @AuthenticationPrincipal principalDetails: PrincipalDetails
     ): ApiResponse<Slice<ChatResponse>> {
-        val pageRequest = PageRequest.of(page - 1, size, Sort.by("createdAt").descending())
-        return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.member))
+        val pageRequest = PageRequest.of(0, size, Sort.by("createdAt").descending())
+        return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.member, cursor))
     }
 
     /**

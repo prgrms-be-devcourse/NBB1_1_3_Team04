@@ -9,14 +9,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
+import java.time.LocalDateTime
 
 class CustomChatRepositoryImpl (
     private val queryFactory: JPAQueryFactory
 ) : CustomChatRepository {
 
-    override fun findChatByChatroom(chatroom: Chatroom, pageable: Pageable): Slice<ChatResponse> {
+    override fun findChatByChatroom(chatroom: Chatroom, pageable: Pageable, cursor: LocalDateTime?): Slice<ChatResponse> {
         val pageSize = pageable.pageSize
-        val chats = getChatList(chatroom, pageable)
+        val chats = getChatList(chatroom, pageable, cursor)
         var hasNext = false
         if (chats.size > pageSize) {
             chats.removeAt(pageSize)
@@ -41,16 +42,20 @@ class CustomChatRepositoryImpl (
             .fetchOne()
     }
 
-    private fun getChatList(chatroom: Chatroom, pageable: Pageable): MutableList<Chat> {
+    private fun getChatList(chatroom: Chatroom, pageable: Pageable, cursor: LocalDateTime?): MutableList<Chat> {
         return queryFactory
             .select(chat)
             .from(chat)
             .where(
                 chat.isDeleted.eq(IsDeleted.FALSE)
                     .and(chat.chatroom.eq(chatroom))
+                    .let {
+                        // 커서가 있는 경우, createdAt이 커서보다 작은 항목만 가져옴
+                        if (cursor != null) it.and(chat.createdAt.lt(cursor))
+                        else it
+                    }
             )
             .orderBy(chat.createdAt.desc())
-            .offset(pageable.offset) // 페이지 번호
             .limit((pageable.pageSize + 1).toLong()) // 페이지 사이즈
             .fetch()
     }

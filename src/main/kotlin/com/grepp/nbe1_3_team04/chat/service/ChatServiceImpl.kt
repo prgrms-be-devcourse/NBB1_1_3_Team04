@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 
 @Service
@@ -57,11 +58,11 @@ class ChatServiceImpl(
      * 채팅방 메세지를 보려면 채팅방에 소속된 멤버여야 함
      */
     @Transactional(readOnly = true)
-    override fun getChatList(chatroomId: Long, pageRequest: PageRequest, member: Member): Slice<ChatResponse> {
+    override fun getChatList(chatroomId: Long, pageRequest: PageRequest, member: Member, cursor: LocalDateTime?): Slice<ChatResponse> {
         val chatroom = getChatroom(chatroomId)
         checkMemberInChatroom(member, chatroom)
 
-        return chatRepository.findChatByChatroom(chatroom, pageRequest)
+        return chatRepository.findChatByChatroom(chatroom, pageRequest, cursor)
     }
 
     /**
