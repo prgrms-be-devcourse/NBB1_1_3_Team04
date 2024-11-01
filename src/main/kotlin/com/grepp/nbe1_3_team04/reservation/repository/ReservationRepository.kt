@@ -27,6 +27,14 @@ interface ReservationRepository : JpaRepository<Reservation, Long>, CustomGlobal
         pageable: Pageable
     ): Slice<Reservation>
 
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Reservation r WHERE r.isDeleted = 'FALSE' AND r.matchDate = :matchDate AND r.court = :court AND r.reservationStatus = :reservationStatus AND r.reservationId != :id")
+    fun existsByMatchDateAndCourtAndReservationStatus(
+        @Param("id") id: Long,
+        @Param("matchDate") matchDate: LocalDateTime,
+        @Param("court") court: Court,
+        @Param("reservationStatus") reservationStatus: ReservationStatus
+    ): Boolean
+
     @Query("select r from Reservation r where r.isDeleted = 'false' and r.reservationId = :id")
     fun findByReservationId(@Param("id") reservationId: Long): Reservation?
 

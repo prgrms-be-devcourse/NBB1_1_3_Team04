@@ -6,5 +6,9 @@ enum class GameStatus {
     READY,
     IGNORE,
     PLAY,
-    DONE
+    DONE;
+
+    fun isReadyOrIgnore(): Boolean {
+        return this == READY || this == IGNORE
+    }
 }
