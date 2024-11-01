@@ -28,6 +28,7 @@ class GameServiceImpl(
     companion object {
         private val log = LoggerFactory.getLogger(GameServiceImpl::class.java)
         private const val PAGE_SIZE = 10
+        private val VALID_GAME_STATUSES = setOf(GameStatus.READY, GameStatus.IGNORE)
     }
 
     @Transactional
@@ -51,7 +52,7 @@ class GameServiceImpl(
     override fun updateGameStatus(member: Member, request: GameStatusUpdateServiceRequest): String {
         val memberId = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
-        if (request.status !in listOf(GameStatus.READY, GameStatus.IGNORE)) {
+        if (request.status !in VALID_GAME_STATUSES) {
             throw IllegalArgumentException(ExceptionMessage.GAME_STATUS_NOT_VALID.text)
         }
 
@@ -88,36 +89,50 @@ class GameServiceImpl(
             ExceptionMessage.RESERVATION_NOT_FOUND
         )
 
-        if (firstReservation.reservationStatus != ReservationStatus.READY || secondReservation.reservationStatus != ReservationStatus.READY) {
-            throw IllegalArgumentException(ExceptionMessage.RESERVATION_STATUS_NOT_READY.text)
-        }
+        validateReservationStatus(firstReservation, secondReservation)
 
         return if (isReservationConflict(firstReservation)) {
-            game.update(GameStatus.IGNORE)
-            firstReservation.updateStatus(ReservationStatus.CANCELLED)
-            secondReservation.updateStatus(ReservationStatus.CANCELLED)
-            gameRepository.softDeleteBySecondTeamReservation(secondReservation)
+            cancelReservations(game, firstReservation, secondReservation)
             ExceptionMessage.RESERVATION_CONFLICT.text
         } else {
-            firstReservation.updateStatus(ReservationStatus.CONFIRMED)
-            secondReservation.updateStatus(ReservationStatus.CONFIRMED)
+            confirmReservations(firstReservation, secondReservation)
             ExceptionMessage.RESERVATION_SUCCESS.text
         }
     }
 
+    private fun validateReservationStatus(firstReservation: Reservation, secondReservation: Reservation) {
+        if (firstReservation.reservationStatus != ReservationStatus.READY || secondReservation.reservationStatus != ReservationStatus.READY) {
+            throw IllegalArgumentException(ExceptionMessage.RESERVATION_STATUS_NOT_READY.text)
+        }
+    }
+
+    private fun cancelReservations(game: Game, firstReservation: Reservation, secondReservation: Reservation) {
+        game.update(GameStatus.IGNORE)
+        firstReservation.updateStatus(ReservationStatus.CANCELLED)
+        secondReservation.updateStatus(ReservationStatus.CANCELLED)
+        gameRepository.softDeleteBySecondTeamReservation(secondReservation)
+    }
+
+    private fun confirmReservations(firstReservation: Reservation, secondReservation: Reservation) {
+        firstReservation.updateStatus(ReservationStatus.CONFIRMED)
+        secondReservation.updateStatus(ReservationStatus.CONFIRMED)
+    }
+
     private fun isReservationConflict(reservation: Reservation): Boolean {
-        return reservationRepository.findByMatchDateAndCourtAndReservationStatus(
-            id = -1L,
+        return reservationRepository.existsByMatchDateAndCourtAndReservationStatus(
+            id = reservation.reservationId!!,
             matchDate = reservation.matchDate,
             court = reservation.court,
-            reservationStatus = ReservationStatus.CONFIRMED,
-            pageable = PageRequest.of(0, 1)
-        ).hasContent()
+            reservationStatus = ReservationStatus.CONFIRMED
+        )
     }
 
     private fun getValidatedReservation(reservationId: Long, memberId: Long): Reservation {
-        val reservation =
-            findEntityByIdOrThrowException(reservationRepository, reservationId, ExceptionMessage.RESERVATION_NOT_FOUND)
+        val reservation = findEntityByIdOrThrowException(
+            reservationRepository,
+            reservationId,
+            ExceptionMessage.RESERVATION_NOT_FOUND
+        )
         if (reservation.member.memberId != memberId) {
             throw IllegalArgumentException(ExceptionMessage.RESERVATION_MEMBER_NOT_MATCH.text)
         }
