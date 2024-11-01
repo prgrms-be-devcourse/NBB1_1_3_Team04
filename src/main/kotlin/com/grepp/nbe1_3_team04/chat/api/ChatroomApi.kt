@@ -21,7 +21,7 @@ class ChatroomApi(
      * 팀, 예약 생성시 같이 실행해주기
      */
     @PostMapping
-    fun createChatroom(@RequestBody chatroomRequest: @Valid ChatroomRequest): ApiResponse<ChatroomResponse> {
+    fun createChatroom(@RequestBody @Valid chatroomRequest: ChatroomRequest): ApiResponse<ChatroomResponse> {
         return ApiResponse.created(chatroomService.createChatroom(chatroomRequest.toServiceRequest()))
     }
 
@@ -39,7 +39,7 @@ class ChatroomApi(
     @PutMapping("/{chatroomId}")
     fun updateChatroom(
         @PathVariable("chatroomId") chatroomId: Long,
-        @RequestBody chatroomRequest: @Valid ChatroomRequest
+        @RequestBody @Valid chatroomRequest: ChatroomRequest
     ): ApiResponse<ChatroomResponse> {
         return ApiResponse.ok(chatroomService.updateChatroom(chatroomId, chatroomRequest.toServiceRequest()))
     }

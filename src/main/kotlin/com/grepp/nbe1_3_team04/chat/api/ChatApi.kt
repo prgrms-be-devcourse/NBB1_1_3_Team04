@@ -56,7 +56,7 @@ class ChatApi(
     @PutMapping("/{chatId}")
     fun updateChatting(
         @PathVariable chatId: Long,
-        @RequestBody request: @Valid ChatUpdateRequest,
+        @RequestBody @Valid request: ChatUpdateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails
     ): ApiResponse<ChatResponse> {
         return ApiResponse.ok(
