@@ -28,7 +28,6 @@ class GameServiceImpl(
     companion object {
         private val log = LoggerFactory.getLogger(GameServiceImpl::class.java)
         private const val PAGE_SIZE = 10
-        private val VALID_GAME_STATUSES = setOf(GameStatus.READY, GameStatus.IGNORE)
     }
 
     @Transactional
@@ -52,7 +51,7 @@ class GameServiceImpl(
     override fun updateGameStatus(member: Member, request: GameStatusUpdateServiceRequest): String {
         val memberId = member.memberId ?: throw IllegalArgumentException(ExceptionMessage.MEMBER_ABNORMAL.text)
 
-        if (request.status !in VALID_GAME_STATUSES) {
+        if (!request.status.isReadyOrIgnore()) {
             throw IllegalArgumentException(ExceptionMessage.GAME_STATUS_NOT_VALID.text)
         }
 
