@@ -42,7 +42,7 @@ class GameServiceImpl(
             ExceptionMessage.RESERVATION_NOT_FOUND
         )
 
-        val game = Game.create(reservation1, reservation2, GameStatus.PENDING)
+        val game = Game.create(reservation1, reservation2)
         gameRepository.save(game)
 
         return GameDetailResponse.from(game)

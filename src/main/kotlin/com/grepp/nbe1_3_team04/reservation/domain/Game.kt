@@ -39,12 +39,11 @@ class Game private constructor(
         fun create(
             firstTeamReservation: Reservation,
             secondTeamReservation: Reservation,
-            gameStatus: GameStatus
         ): Game {
             return Game(
                 firstTeamReservation = firstTeamReservation,
                 secondTeamReservation = secondTeamReservation,
-                gameStatus = gameStatus
+                gameStatus = GameStatus.PENDING
             )
         }
     }
