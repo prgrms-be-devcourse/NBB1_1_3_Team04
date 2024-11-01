@@ -16,14 +16,27 @@ import java.util.*
 @Component
 class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTemplate: RedisTemplate<String, *>) : OncePerRequestFilter() {
 
+    private final val excludedUrls = listOf(
+        "/api/v1/members/join",
+        "/api/v1/members/login",
+        "/api/v1/court/",
+        "/api/v1/stadium/",
+        "/api/v1/merchant/",
+    )
+
+
     @Throws(ServletException::class, IOException::class)
-    protected override fun doFilterInternal(
+    override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN)
-        val refreshToken = jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
+        if (isExcludedUrl(request.requestURI)) {
+            filterChain.doFilter(request, response)
+        }
+
+        val accessToken = jwtTokenUtil.getHeaderToken(request, JwtTokenUtil.ACCESS_TOKEN)
+        val refreshToken = getRefreshTokenByRequest(request) ?: jwtTokenUtil.getHeaderToken(request, JwtTokenUtil.REFRESH_TOKEN)
 
         processSecurity(accessToken, refreshToken)
         filterChain.doFilter(request, response)
@@ -34,7 +47,7 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         accessToken?.let{
             jwtTokenUtil.tokenValidation(it)
             val email = jwtTokenUtil.getEmailFromToken(it)
-            val isLogout = redisTemplate.opsForValue().get(it) as String?
+            val isLogout = redisTemplate.opsForValue()[it] as String?
 
             if(ObjectUtils.isEmpty(isLogout)){
                 setAuthentication(email)
@@ -42,7 +55,9 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
         }
 
         if (accessToken == null && refreshToken != null) {
-            jwtTokenUtil.refreshTokenValidation(refreshToken)
+            if(!jwtTokenUtil.refreshTokenValidation(refreshToken)){
+                return
+            }
             setAuthentication(jwtTokenUtil.getEmailFromToken(refreshToken))
         }
     }
@@ -54,19 +69,21 @@ class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTe
 
 
     companion object {
-        const val ACCESS_TOKEN: String = "Authorization"
-        const val REFRESH_TOKEN: String = "refresh_token"
-        private const val COOKIE_REFRESH_TOKEN = "refreshToken"
         fun getRefreshTokenByRequest(request: HttpServletRequest): String? {
             val cookies: Array<Cookie>? = request.cookies
 
             if (!cookies.isNullOrEmpty()) {
                 return Arrays.stream(cookies)
-                    .filter { c: Cookie -> c.name == COOKIE_REFRESH_TOKEN }.findFirst().map { obj: Cookie -> obj.value }
+                    .filter { c: Cookie -> c.name == JwtTokenUtil.COOKIE_REFRESH_TOKEN }.findFirst().map { obj: Cookie -> obj.value }
                     .orElse(null)
             }
 
             return null
         }
     }
+
+    private fun isExcludedUrl(requestURI: String): Boolean {
+        return excludedUrls.any { requestURI.startsWith(it) }
+    }
+
 }

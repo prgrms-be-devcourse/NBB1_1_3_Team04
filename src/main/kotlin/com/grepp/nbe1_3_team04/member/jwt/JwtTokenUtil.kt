@@ -139,17 +139,19 @@ class JwtTokenUtil(private val userDetailService: PrincipalDetailsService, priva
         }
     }
 
-    fun refreshTokenValidation(refreshToken: String?) {
+    fun refreshTokenValidation(refreshToken: String?): Boolean {
         tokenValidation(refreshToken)
         val email = getEmailFromToken(refreshToken)
         val redisRefresh = redisTemplate.opsForValue()[email]
 
-        redisRefresh?.toString() ?: throw JwtException("유효하지 않은 Jwt 토큰입니다.")
+        redisRefresh?.toString() ?: return false
+        return true
     }
 
     companion object {
         const val ACCESS_TOKEN: String = "Authorization"
         const val REFRESH_TOKEN: String = "refresh_token"
+        const val COOKIE_REFRESH_TOKEN = "refreshToken"
         const val BEARER_PREFIX: String = "Bearer "
         val ACCESS_TIME: Long = Duration.ofMinutes(30).toMillis() // 만료시간 30분
         val REFRESH_TIME: Long = Duration.ofDays(14).toMillis() // 만료시간 2주
