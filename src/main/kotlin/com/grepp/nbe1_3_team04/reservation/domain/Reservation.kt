@@ -56,6 +56,14 @@ class Reservation private constructor(
         this.reservationStatus = reservationStatus
     }
 
+    fun cancel() {
+        this.reservationStatus = ReservationStatus.CANCELLED
+    }
+
+    fun confirm() {
+        this.reservationStatus = ReservationStatus.CONFIRMED
+    }
+
     fun checkReservationOwner(memberId: Long) {
         if (member.memberId == memberId) {
             return

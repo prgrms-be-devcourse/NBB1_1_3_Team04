@@ -108,14 +108,14 @@ class GameServiceImpl(
 
     private fun cancelReservations(game: Game, firstReservation: Reservation, secondReservation: Reservation) {
         game.update(GameStatus.IGNORE)
-        firstReservation.updateStatus(ReservationStatus.CANCELLED)
-        secondReservation.updateStatus(ReservationStatus.CANCELLED)
+        firstReservation.cancel()
+        secondReservation.cancel()
         gameRepository.softDeleteBySecondTeamReservation(secondReservation)
     }
 
     private fun confirmReservations(firstReservation: Reservation, secondReservation: Reservation) {
-        firstReservation.updateStatus(ReservationStatus.CONFIRMED)
-        secondReservation.updateStatus(ReservationStatus.CONFIRMED)
+        firstReservation.confirm()
+        secondReservation.confirm()
     }
 
     private fun isReservationConflict(reservation: Reservation): Boolean {
