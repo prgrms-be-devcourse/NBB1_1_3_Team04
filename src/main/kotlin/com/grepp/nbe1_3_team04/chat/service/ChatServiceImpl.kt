@@ -202,7 +202,7 @@ class ChatServiceImpl(
 
     ////////////////////// 새로운 채팅 batch Insert /////////////////////////
 
-    @Scheduled(fixedRate = 60000) // 1분마다 실행
+    @Scheduled(cron = "0 30 * * * *") // 1시간마다 실행
     fun batchInsertChatMessages() {
         val currentTimestamp = Instant.now().toEpochMilli().toDouble()
         val chatRoomIds = chatroomRepository.findAll().map { it.chatroomId }
