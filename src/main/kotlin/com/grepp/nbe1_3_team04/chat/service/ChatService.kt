@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 interface ChatService {
     fun sendMessage(request: ChatServiceRequest, token: String)
 
-    fun getChatList(chatroomId: Long, pageRequest: PageRequest, member: Member, cursor: LocalDateTime?): Slice<ChatResponse>
+    fun getChatList(chatroomId: Long, pageRequest: PageRequest, member: Member, cursor: LocalDateTime?): List<ChatResponse>
 
     fun updateChat(request: ChatUpdateServiceRequest, member: Member, chatId: Long): ChatResponse
 
