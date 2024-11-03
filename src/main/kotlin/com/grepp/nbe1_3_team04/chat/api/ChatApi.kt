@@ -7,7 +7,6 @@ import com.grepp.nbe1_3_team04.chat.service.response.ChatResponse
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
 import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -45,7 +44,7 @@ class ChatApi(
         @RequestParam cursor: LocalDateTime?,
         @RequestParam size: Int,
         @AuthenticationPrincipal principalDetails: PrincipalDetails
-    ): ApiResponse<Slice<ChatResponse>> {
+    ): ApiResponse<List<ChatResponse>> {
         val pageRequest = PageRequest.of(0, size, Sort.by("createdAt").descending())
         return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.member, cursor))
     }
