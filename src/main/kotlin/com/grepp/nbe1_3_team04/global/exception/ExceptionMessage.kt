@@ -49,7 +49,10 @@ enum class ExceptionMessage(text: String) {
     //global
     REQUIRE_NOT_NULL_ID("ID는 Null일 수 없습니다."),
     REQUIRE_NOT_NULL_CREATED_AT("생성일은 Null일 수 없습니다."),
-    REQUIRE_NOT_NULL_UPDATED_AT("수정일은 Null일 수 없습니다.");
+    REQUIRE_NOT_NULL_UPDATED_AT("수정일은 Null일 수 없습니다."),
+
+    CANNOT_BATCH_INSERT("채팅 Batch Insert중 오류가 발생했습니다.")
+    ;
 
 
     val text: String = text

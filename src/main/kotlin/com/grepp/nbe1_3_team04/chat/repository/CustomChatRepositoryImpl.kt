@@ -51,8 +51,7 @@ class CustomChatRepositoryImpl (
                     .and(chat.chatroom.eq(chatroom))
                     .let {
                         // 커서가 있는 경우, createdAt이 커서보다 작은 항목만 가져옴
-                        if (cursor != null) it.and(chat.createdAt.lt(cursor))
-                        else it
+                        cursor?.let { cur -> it.and(chat.createdAt.lt(cur)) } ?: it
                     }
             )
             .orderBy(chat.createdAt.desc())
@@ -69,8 +68,7 @@ class CustomChatRepositoryImpl (
                     .and(chat.chatroom.eq(chatroom))
                     .let {
                         // 커서가 있는 경우, createdAt이 커서보다 작은 항목만 가져옴
-                        if (cursor != null) it.and(chat.createdAt.lt(cursor))
-                        else it
+                        cursor?.let { cur -> it.and(chat.createdAt.lt(cur)) } ?: it
                     }
             )
             .orderBy(chat.createdAt.desc())

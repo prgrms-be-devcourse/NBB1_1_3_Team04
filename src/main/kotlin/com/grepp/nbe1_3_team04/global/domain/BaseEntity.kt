@@ -33,8 +33,8 @@ abstract class BaseEntity {
     var isDeleted = IsDeleted.FALSE
 
     fun updateTimeToNow(){
-        createdAt = ZonedDateTime.now(ZoneId.of("UTC")).toLocalDateTime()
-        updatedAt = ZonedDateTime.now(ZoneId.of("UTC")).toLocalDateTime()
+        createdAt = ZonedDateTime.now(ZoneId.systemDefault()).toLocalDateTime()
+        updatedAt = ZonedDateTime.now(ZoneId.systemDefault()).toLocalDateTime()
     }
 
 }

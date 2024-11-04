@@ -20,7 +20,10 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.*
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 
 @Service
@@ -146,10 +149,10 @@ class ChatServiceImpl(
     }
 
     // 채팅을 redis에서 조회
-    fun getChatMessagesWithCursor(chatroom: Chatroom, cursor: LocalDateTime?, pageable: Pageable): List<Chat> {
+    private fun getChatMessagesWithCursor(chatroom: Chatroom, cursor: LocalDateTime?, pageable: Pageable): List<Chat> {
         val regularKey = "chatroom:${chatroom.chatroomId}"
         val newKey = "chatroom:${chatroom.chatroomId}:new"
-        val score: Double? = cursor?.atZone(ZoneId.of("UTC"))?.toInstant()?.toEpochMilli()?.toDouble()
+        val score: Double? = cursor?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()?.toDouble()
         val endScore = score?.let { it - 0.1 } ?: System.currentTimeMillis().toDouble() // 커서 시간을 포함하지 않게 // 기본 커서는 현재 시간
         val startScore = Double.NEGATIVE_INFINITY
 
@@ -165,7 +168,7 @@ class ChatServiceImpl(
     }
 
     // 채팅을 RDBMS에서 조회
-    fun getChatMessagesWithCursorFromDb(chatroom: Chatroom, cursor: LocalDateTime?, limit: Int): List<Chat> {
+    private fun getChatMessagesWithCursorFromDb(chatroom: Chatroom, cursor: LocalDateTime?, limit: Int): List<Chat> {
         val messagesFromDb = chatRepository.findChatByChatroomList(chatroom, limit, cursor)
 
         messagesFromDb.forEach { message ->
@@ -177,7 +180,7 @@ class ChatServiceImpl(
     }
 
     // redis에서 조회한 채팅이 있는지 체크 후 없다면 db에서 조회
-    fun getChatMessages(chatroom: Chatroom, cursor: LocalDateTime?, pageable: Pageable): List<Chat> {
+    private fun getChatMessages(chatroom: Chatroom, cursor: LocalDateTime?, pageable: Pageable): List<Chat> {
         val messages = getChatMessagesWithCursor(chatroom, cursor, pageable)
 
         return if (messages.isEmpty()){
@@ -190,18 +193,19 @@ class ChatServiceImpl(
     }
 
     // response List로 만들어주기
-    fun toResponseList(chats: List<Chat>): List<ChatResponse> {
+    private fun toResponseList(chats: List<Chat>): List<ChatResponse> {
         return chats.map { ChatResponse(it) }
     }
 
     // localDateTime을 Redis에서 사용할 수 있게 double로 변경
-    fun localDateTimeToDouble(cursor: LocalDateTime?): Double {
-        return cursor?.atZone(ZoneId.of("UTC"))?.toInstant()?.toEpochMilli()?.toDouble()
-            ?: throw IllegalArgumentException("생성시간은 null 일 수 없습니다.")
+    private fun localDateTimeToDouble(cursor: LocalDateTime?): Double {
+        return cursor?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()?.toDouble()
+            ?: throw IllegalArgumentException(ExceptionMessage.REQUIRE_NOT_NULL_CREATED_AT.text)
     }
 
     ////////////////////// 새로운 채팅 batch Insert /////////////////////////
 
+    @Transactional
     @Scheduled(cron = "0 30 * * * *") // 1시간마다 실행
     fun batchInsertChatMessages() {
         val currentTimestamp = Instant.now().toEpochMilli().toDouble()
@@ -246,9 +250,10 @@ class ChatServiceImpl(
 
     // 레디스 캐시를 최근 1주일 채팅으로 동기화
     // 매주 일요일 새벽 4시
+    @Transactional
     @Scheduled(cron = "0 0 4 * * SUN")
     fun syncChatWithCache() {
-        val oneWeekAgo = ZonedDateTime.now(ZoneId.of("UTC")).toLocalDateTime().minusWeeks(1)
+        val oneWeekAgo = ZonedDateTime.now(ZoneId.systemDefault()).toLocalDateTime().minusWeeks(1)
         val chatRoomIds = chatroomRepository.findAll().map { it.chatroomId }
 
         chatRoomIds.forEach { chatRoomId ->
@@ -275,18 +280,18 @@ class ChatServiceImpl(
     }
 
     // 최근 일주일보다 오래된 채팅 캐시 삭제
-    fun deleteOldCacheMessages(chatroomId: Long?, oneWeekAgo: LocalDateTime) {
+    private fun deleteOldCacheMessages(chatroomId: Long?, oneWeekAgo: LocalDateTime) {
         val redisKey = "chatroom:$chatroomId"
 
-        // oneWeekAgo를 UTC의 epoch milli로 변환
-        val scoreThreshold = oneWeekAgo.toInstant(ZoneOffset.UTC).toEpochMilli().toDouble()
+        // oneWeekAgo를 epoch milli로 변환
+        val scoreThreshold = oneWeekAgo.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli().toDouble()
 
         // scoreThreshold 이하의 메시지를 삭제합니다.
         redisTemplate.opsForZSet().removeRangeByScore(redisKey, Double.NEGATIVE_INFINITY, scoreThreshold)
     }
 
     // 최근 1주간 채팅 가져오기
-    fun getMessagesForLastWeek(oneWeekAgo: LocalDateTime): List<Chat> {
+    private fun getMessagesForLastWeek(oneWeekAgo: LocalDateTime): List<Chat> {
         return chatRepository.findAllByCreatedAtAfter(oneWeekAgo)
     }
 }

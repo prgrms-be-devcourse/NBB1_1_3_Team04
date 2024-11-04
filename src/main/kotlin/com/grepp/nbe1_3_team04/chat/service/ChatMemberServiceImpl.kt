@@ -243,7 +243,7 @@ class ChatMemberServiceImpl(
 
     // localDateTime을 Redis에서 사용할 수 있게 double로 변경
     fun localDateTimeToDouble(cursor: LocalDateTime?): Double {
-        return cursor?.atZone(ZoneId.of("UTC"))?.toInstant()?.toEpochMilli()?.toDouble()
-            ?: throw IllegalArgumentException("생성시간은 null 일 수 없습니다.")
+        return cursor?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()?.toDouble()
+            ?: throw IllegalArgumentException(ExceptionMessage.REQUIRE_NOT_NULL_CREATED_AT.text)
     }
 }
