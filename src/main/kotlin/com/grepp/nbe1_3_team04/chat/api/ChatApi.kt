@@ -7,13 +7,13 @@ import com.grepp.nbe1_3_team04.chat.service.response.ChatResponse
 import com.grepp.nbe1_3_team04.global.api.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
 import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import team4.footwithme.member.jwt.PrincipalDetails
+import java.time.LocalDateTime
 
 
 @RestController
@@ -41,12 +41,12 @@ class ChatApi(
     @GetMapping("/{chatroomId}")
     fun getChatting(
         @PathVariable chatroomId: Long,
-        @RequestParam page: Int,
+        @RequestParam cursor: LocalDateTime?,
         @RequestParam size: Int,
         @AuthenticationPrincipal principalDetails: PrincipalDetails
-    ): ApiResponse<Slice<ChatResponse>> {
-        val pageRequest = PageRequest.of(page - 1, size, Sort.by("createdAt").descending())
-        return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.member))
+    ): ApiResponse<List<ChatResponse>> {
+        val pageRequest = PageRequest.of(0, size, Sort.by("createdAt").descending())
+        return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.member, cursor))
     }
 
     /**
@@ -55,7 +55,7 @@ class ChatApi(
     @PutMapping("/{chatId}")
     fun updateChatting(
         @PathVariable chatId: Long,
-        @RequestBody request: @Valid ChatUpdateRequest,
+        @RequestBody @Valid request: ChatUpdateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails
     ): ApiResponse<ChatResponse> {
         return ApiResponse.ok(

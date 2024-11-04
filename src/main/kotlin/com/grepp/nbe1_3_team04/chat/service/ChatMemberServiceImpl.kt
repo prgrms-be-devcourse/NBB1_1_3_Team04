@@ -4,7 +4,6 @@ import com.grepp.nbe1_3_team04.chat.domain.Chat
 import com.grepp.nbe1_3_team04.chat.domain.ChatMember
 import com.grepp.nbe1_3_team04.chat.domain.Chatroom
 import com.grepp.nbe1_3_team04.chat.repository.ChatMemberRepository
-import com.grepp.nbe1_3_team04.chat.repository.ChatRepository
 import com.grepp.nbe1_3_team04.chat.repository.ChatroomRepository
 import com.grepp.nbe1_3_team04.chat.service.request.ChatMemberServiceRequest
 import com.grepp.nbe1_3_team04.chat.service.response.ChatMemberResponse
@@ -13,8 +12,11 @@ import com.grepp.nbe1_3_team04.member.domain.Member
 import com.grepp.nbe1_3_team04.member.repository.MemberRepository
 import com.grepp.nbe1_3_team04.reservation.domain.Participant
 import com.grepp.nbe1_3_team04.team.domain.TeamMember
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 @Service
@@ -22,8 +24,8 @@ class ChatMemberServiceImpl(
     private val chatMemberRepository: ChatMemberRepository,
     private val memberRepository: MemberRepository,
     private val chatroomRepository: ChatroomRepository,
-    private val chatRepository: ChatRepository,
-    private val redisPublisher: RedisPublisher
+    private val redisPublisher: RedisPublisher,
+    private val redisTemplate: RedisTemplate<String, Chat>
 ) : ChatMemberService {
 
     /**
@@ -60,7 +62,10 @@ class ChatMemberServiceImpl(
         val chatMember: ChatMember = chatMemberRepository.save(ChatMember.create(member, chatroom))
 
         val chat = Chat.createEnterChat(chatroom, member)
-        chatRepository.save(chat)
+        chat.updateTimeToNow()
+
+        // redis에 채팅 저장
+        saveChatInRedis(chat)
 
         redisPublisher.publish(chat)
 
@@ -116,7 +121,10 @@ class ChatMemberServiceImpl(
         chatMemberRepository.saveAll(chatMembers)
 
         val chat = Chat.createGroupEnterChat(chatroom, chatMembers)
-        chatRepository.save(chat)
+        chat.updateTimeToNow()
+
+        // redis에 채팅 저장
+        saveChatInRedis(chat)
 
         redisPublisher.publish(chat)
     }
@@ -155,7 +163,10 @@ class ChatMemberServiceImpl(
         chatMemberRepository.deleteByMemberAndChatroom(member, chatroom)
 
         val chat = Chat.createQuitChat(chatroom, member)
-        chatRepository.save(chat)
+        chat.updateTimeToNow()
+
+        // redis에 채팅 저장
+        saveChatInRedis(chat)
 
         redisPublisher.publish(chat)
 
@@ -221,5 +232,18 @@ class ChatMemberServiceImpl(
 
     private fun getChatroomByReservationId(reservationId: Long): Chatroom {
         return chatroomRepository.findByReservationId(reservationId) ?: throw IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text)
+    }
+
+    // 채팅을 redis에 저장
+    private fun saveChatInRedis(chat: Chat) {
+        val key = "chatroom:${chat.chatroom.chatroomId}:new"
+        val score = localDateTimeToDouble(chat.createdAt)
+        redisTemplate.opsForZSet().add(key, chat, score)
+    }
+
+    // localDateTime을 Redis에서 사용할 수 있게 double로 변경
+    fun localDateTimeToDouble(cursor: LocalDateTime?): Double {
+        return cursor?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()?.toDouble()
+            ?: throw IllegalArgumentException(ExceptionMessage.REQUIRE_NOT_NULL_CREATED_AT.text)
     }
 }

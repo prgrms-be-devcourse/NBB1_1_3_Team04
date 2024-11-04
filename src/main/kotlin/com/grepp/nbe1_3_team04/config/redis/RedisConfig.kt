@@ -1,11 +1,12 @@
 package com.grepp.nbe1_3_team04.config.redis
 
+import com.grepp.nbe1_3_team04.chat.domain.Chat
 import com.grepp.nbe1_3_team04.chat.service.RedisSubscriber
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.data.redis.connection.RedisConnectionFactory
-import org.springframework.data.redis.core.HashOperations
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.listener.ChannelTopic
 import org.springframework.data.redis.listener.RedisMessageListenerContainer
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @Configuration
 @EnableRedisRepositories
 @EnableTransactionManagement
+@EnableCaching
 class RedisConfig {
     //redis pub/sub 사용할 때의 chatting Topic
     @Bean
@@ -52,6 +54,16 @@ class RedisConfig {
         redisTemplate.connectionFactory = connectionFactory
         redisTemplate.keySerializer = StringRedisSerializer()
         redisTemplate.valueSerializer = Jackson2JsonRedisSerializer(String::class.java)
+        redisTemplate.setEnableTransactionSupport(true)
+        return redisTemplate
+    }
+
+    @Bean
+    fun chatRedisTemplate(connectionFactory: RedisConnectionFactory?): RedisTemplate<String, Chat> {
+        val redisTemplate = RedisTemplate<String, Chat>()
+        redisTemplate.connectionFactory = connectionFactory
+        redisTemplate.keySerializer = StringRedisSerializer()
+        redisTemplate.valueSerializer = Jackson2JsonRedisSerializer(Chat::class.java) // Chat에 맞춘 직렬화
         redisTemplate.setEnableTransactionSupport(true)
         return redisTemplate
     }

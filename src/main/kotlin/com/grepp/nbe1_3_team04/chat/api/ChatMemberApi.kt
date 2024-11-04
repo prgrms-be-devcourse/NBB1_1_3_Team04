@@ -18,7 +18,7 @@ class ChatMemberApi(
      * 채팅방 초대
      */
     @PostMapping
-    fun inviteChatMember(@RequestBody chatMemberRequest: @Valid ChatMemberRequest): ApiResponse<ChatMemberResponse> {
+    fun inviteChatMember(@RequestBody @Valid chatMemberRequest: ChatMemberRequest): ApiResponse<ChatMemberResponse> {
         return ApiResponse.created(chatMemberService.joinChatMember(chatMemberRequest.toServiceRequest()))
     }
 
@@ -26,7 +26,7 @@ class ChatMemberApi(
      * 채팅방 나감
      */
     @DeleteMapping
-    fun removeChatMember(@RequestBody chatMemberRequest: @Valid ChatMemberRequest): ApiResponse<ChatMemberResponse> {
+    fun removeChatMember(@RequestBody @Valid chatMemberRequest: ChatMemberRequest): ApiResponse<ChatMemberResponse> {
         return ApiResponse.ok(chatMemberService.leaveChatMember(chatMemberRequest.toServiceRequest()))
     }
 }
