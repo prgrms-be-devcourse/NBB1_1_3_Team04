@@ -1,4 +1,4 @@
-# NBE1_1_3_Team04
+# NBE1_2_Team04
 # ⚽풋살 팀 매칭 서비스 FootWithMe
 
 ![foot_with_me_image](https://github.com/user-attachments/assets/96b798e6-0381-48a7-85f0-098ddb727c65)
@@ -22,7 +22,6 @@
 - 개발환경 세팅 : 2024-09-24 ~ 2024-09-25
 - 기능 구현 : 2024-09-25 ~ 2024-10-09
 - 문서화 : 2024-10-09 ~ 2024-10-10
-- 코틀린 마이그레이션 : 2024-10-21 ~ 2024-11-06
 
 
 ### 작업 관리
@@ -59,32 +58,32 @@
 ## 1. 개발 환경
 
 - Front : 구현 예정
-- Back-end : Kotlin, Spring-boot, JPA, MYSQL, Redis
+- Back-end : Java, Spring-boot, JPA, MYSQL, Redis
 - 버전 및 이슈관리 : Github, Github Issues, Github Project
 - 협업 툴 : Discord, Notion, Slack
 - 문서화 : Rest Docs, Notion, README.md
 - 테스트 : JUnit5, Postman
 - 디자인 : [Figma](https://www.figma.com/design/c3v4rVUGBy3KV9g7kOD5ZK/%EB%8D%B0%EB%B8%8C%EC%BD%94%EC%8A%A4-4%ED%8C%80?node-id=0-1&t=eZOYej1YMUn40Khy-1)
 
-| Software              | 세부 Spec 사양 (Version)                                       |
-|-----------------------|------------------------------------------------------------|
-| Kotlin                | 1.9.25                                                     |
-| Spring Boot           | 3.3.4                                                      |
+| Software              | 세부 Spec 사양 (Version) |
+|-----------------------| --- |
+| Java                  | Java SE 17.0.11 |
+| Spring Boot           | 3.3.4 |
 | Spring Boot Libraries | Data JPA, Web, Validation, Security, Redis Reactive: 2.1.0 |
-| Lombok                | 1.18.20                                                    |
-| QueryDSL              | JPA: 5.0.0 (Jakarta)                                       |
-| JWT                   | JJWT API: 0.11.5                                           |
-| MySQL                 | MySQL Community 8.0.39                                     |
-| MySQL Connector       | 8.0.29                                                     |
-| H2 Database           | 2.1.214 (Test 용도)                                          |
-| JUnit                 | JUnit Platform Launcher: 1.9.2                             |
-| JTS                   | JTS Core: 1.19.0                                           |
-| Hibernate Spatial     | 6.5.3.Final                                                |
-| Spring Security       | OAuth2 Client: 6.3.1                                       |
-| WebSocket             | Spring Boot Starter WebSocket                              |
-| Embedded Redis        | 0.7.2 (ARM 지원)                                             |
-| Jackson               | Jackson Datatype JSR310, Jackson Databind                  |
-| Spring REST Docs      | Spring RestDocs Asciidoctor, MockMVC                       |
+| Lombok                | 1.18.20 |
+| QueryDSL              | JPA: 5.0.0 (Jakarta) |
+| JWT                   | JJWT API: 0.11.5 |
+| MySQL                 | MySQL Community 8.0.39 |
+| MySQL Connector       | 8.0.29 |
+| H2 Database           | 2.1.214 (Test 용도) |
+| JUnit                 | JUnit Platform Launcher: 1.9.2 |
+| JTS                   | JTS Core: 1.19.0 |
+| Hibernate Spatial     | 6.5.3.Final |
+| Spring Security       | OAuth2 Client: 6.3.1 |
+| WebSocket             | Spring Boot Starter WebSocket |
+| Embedded Redis        | 0.7.2 (ARM 지원) |
+| Jackson               | Jackson Datatype JSR310, Jackson Databind |
+| Spring REST Docs      | Spring RestDocs Asciidoctor, MockMVC |
 
 ---
 
@@ -93,9 +92,7 @@
 - [깃 컨벤션](docs/Branch%20strategy%20and%20pull-request.md)
 ### 코드 컨벤션
 - [코드 컨벤션](docs/Code%20Convention.md)
-### 코틀린 마이그레이션
-<!-- 추후 md파일로 변경 후 링크 변경 -->
-- [코틀린 마이그레이션 컨벤션](https://www.notion.so/fe703c5d81624bf39f4c3056ae695cea?pvs=4)
+
 ---
 
 ## 3. Entity Relationship Diagram
@@ -411,7 +408,7 @@
 ---
 ## 10. 프로젝트 후기
 
-### 🌱 나민혁
+### 🌱 나민혁
 
 프로젝트 하면서 목표했던 바를 많이 이룬거 같아서 기뻐요.
 테스트에 대해서도 팀원들이 같이 고민하고 짜주셔서, 저 혼자서 했으면 못했을 테스트관련 문제도 해결해주시고 해서 좋았습니다.
@@ -423,7 +420,7 @@
 
 <br>
 
-### 👻 노관태
+### 👻 노관태
 
 이번 프로젝트에서 팀원들과의 소통에서 많은 것을 배울 수 있었습니다.
 특히 PR 과정에서 진행된 코드 리뷰를 통해 지식을 공유하고, 다양한 의견을 토론하는 과정이 큰 도움이 되었습니다.
@@ -446,7 +443,7 @@ RESTDocs와 테스트를 통합하여 진행한 경험을 통해 API 문서화�
 
 <br>
 
-### 🙃 박윤영
+### 🙃 박윤영
 실력좋은 팀원분들 덕분에 많이 배워가는 프로젝트였습니다.
 평소에 부족했던 JPA, JUnit 테스트를 깊게 해볼 수 있는 좋은 기회였고,
 git 프로젝트, PR, 코드 리뷰 등을 통해 체계적인 협업을 할 수 있어서 좋았습니다!
